@@ -1,5 +1,6 @@
 export const followData = [
     {
+        id:1,
         name: 'HungHuynh',
         accountName:'Huỳnh Hưng',
         profileImage: require('../storage/images/avatar/17.png'),
@@ -9,6 +10,7 @@ export const followData = [
         follow: false
     },
     {
+        id:2,
         name: 'HaiHiw',
         accountName:'Huỳnh Hải',
         profileImage: require('../storage/images/avatar/16.png'),
@@ -18,6 +20,7 @@ export const followData = [
         follow: false
     },
     {
+        id:3,
         name: 'Hiephh',
         accountName:'Hiệp Hồ',
         profileImage: require('../storage/images/avatar/15.png'),
@@ -27,8 +30,9 @@ export const followData = [
         follow: false
     },
     {
+        id:4,
         name: 'Huy_L',
-        accountName:'Huỳnh Lê',
+        accountName:'Huy Lê',
         profileImage: require('../storage/images/avatar/14.png'),
         posts: 51,
         followers: 13506,
@@ -36,6 +40,7 @@ export const followData = [
         follow: false
     },
     {
+        id:5,
         name: 'HieuSSS',
         accountName:'Hiếu Hồ',
         profileImage: require('../storage/images/avatar/13.png'),
@@ -45,6 +50,7 @@ export const followData = [
         follow: false
     },
     {
+        id:6,
         name: 'Hiennnnn',
         accountName:'Hiền Hồ',
         profileImage: require('../storage/images/avatar/12.png'),

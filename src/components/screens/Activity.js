@@ -16,6 +16,7 @@ const Activity = () => {
             followData.slice(0, 4).map((data, index) => {
               return (
                 <TouchableOpacity onPress={() => navigation.push('FriendProfile', {
+                  id: data.id,
                   name: data.name,
                   image: data.profileImage,
                   follower: data.followers,

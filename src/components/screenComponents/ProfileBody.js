@@ -1,6 +1,5 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import { MorePeople, MorePeopleClick } from '../../svg-view';
+import React from 'react';
 
 export const ProfileBody = ({ name, imageProfile, post, follower, following, accountName }) => {
     return (
@@ -34,45 +33,6 @@ export const ProfileBody = ({ name, imageProfile, post, follower, following, acc
     )
 }
 
-export const FollowButton = ({ id }) => {
-    const [follow, setFollow] = useState(follow)
-    return (
-        <View>
-            {
-                id === 0 ? null : (
-                    <View style={styles.containerFollow}>
-                        <TouchableOpacity onPress={() => setFollow(!follow)} style={{ width: follow ? 170 : 170 }}>
-                            <View style={{
-                                backgroundColor: follow ? '#efefef' : '#0095f6',
-                                width: '100%',
-                                height: 30,
-                                borderRadius: 9,
-                                justifyContent: 'center',
-                                alignItems: 'center'
-
-                            }}>
-                                <Text style={{
-                                    color: follow ? '#000000' : '#ffffff',
-                                    fontWeight: 'bold',
-                                    fontSize: 14
-                                }}>
-                                    {follow ? 'Đang theo dõi' : 'Theo dõi'}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <View style={styles.buttonMessage}>
-                            <Text>Nhắn tin</Text>
-                        </View>
-                        <View style={styles.addFollow}>
-                            <MorePeople />
-                        </View>
-                    </View>
-                )
-
-            }
-        </View>
-    )
-}
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
@@ -99,27 +59,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
     },
-    containerFollow: {
-        flexDirection: 'row',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'space-evenly'
-    },
-    buttonMessage: {
-        backgroundColor: '#efefef',
-        width: '42%',
-        height: 30,
-        borderRadius: 9,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    addFollow: {
-        backgroundColor: '#efefef',
-        width: '8%',
-        height: 30,
-        borderRadius: 6,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
 
 })
