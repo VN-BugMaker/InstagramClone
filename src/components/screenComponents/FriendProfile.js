@@ -1,41 +1,14 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { ProfileBody, Contact } from './ProfileBody';
-import { followData } from '../../data/followData';
-import ButtonFollow from './ButtonFollow';
-import { MorePeople, MorePeopleClick } from '../../svg-view';
+import { ProfileBody } from './ProfileBody';
+import MoreFollow from './MoreFollow';
 
 
 const FriendProfile = ({ route, navigation }) => {
   const { id, name, image, following, follower, post, accountName } = route.params;
-  const [close, setClose] = useState(false);
-  const [moreFollow, setMoreFollow] = useState(moreFollow)
-  
-  const itemSuggest = ({ item }) => {
-    return (
-      <View style={{ marginLeft: 6 }}>
-        {
-          item.id === id || close ? null : (
-            <View style={styles.insideSuggestItem}>
-              <TouchableOpacity style={styles.close}>
-                <AntDesign name='close' style={styles.buttonClose} />
-              </TouchableOpacity>
-              <Image source={item.profileImage} style={styles.imageItemSuggest} />
-              <Text style={styles.textName}>{item.name}</Text>
-              <Text style={styles.textAccountName}>{item.accountName}</Text>
-              <View style={styles.buttonFollow}>
-                <ButtonFollow width={136} />
-              </View>
 
-            </View>
-          )
-        }
-      </View>
-    )
-  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -53,36 +26,10 @@ const FriendProfile = ({ route, navigation }) => {
         following={following}
         accountName={accountName}
       />
-      <View>
-        {
-          (
-            <View style={styles.containerFollow}>
-              <ButtonFollow width={170} />
-              <View style={styles.buttonMessage}>
-                <Text>Nhắn tin</Text>
-              </View>
-              <TouchableOpacity activeOpacity={1} onPress={() => setMoreFollow(!moreFollow)} style={styles.addFollow}>
-                {moreFollow ? <MorePeopleClick /> : <MorePeople />}
-              </TouchableOpacity>
-            </View>
-          )
-
-        }
-      </View>
-      {
-        moreFollow ? (
-          <View>
-            <Text style={styles.textSuggest}>Gợi ý cho bạn</Text>
-            <FlatList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={followData}
-              renderItem={itemSuggest}
-              keyExtractor={data => data.id}
-              style={styles.listSuggest}
-            />
-          </View>) : null
-      }
+      <MoreFollow
+        message={id}
+        id={id}
+      />
 
     </View>
   )

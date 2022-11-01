@@ -1,7 +1,7 @@
 import { React } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { CardStyleInterpolators,createStackNavigator } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
 import Home from "./src/components/screens/Home";
 import Search from "./src/components/screens/Search";
 import Reels from "./src/components/screens/Reels";
@@ -12,6 +12,8 @@ import Status from "./src/components/screenComponents/StatusStories";
 import { View, Image } from "react-native";
 import users from "./src/data/user";
 import FriendProfile from "./src/components/screenComponents/FriendProfile";
+import EditProfile from "./src/components/screenComponents/EditProfile";
+import SettingInformation from "./src/components/screenComponents/SettingInformation";
 const App = () => {
 
   const Stack = createStackNavigator();
@@ -86,6 +88,14 @@ const App = () => {
             cardStyleInterpolator:
               CardStyleInterpolators.forHorizontalIOS,
           }} />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{
+            cardStyleInterpolator:
+              CardStyleInterpolators.forVerticalIOS,
+          }} />
+        <Stack.Screen name="SettingInformation" component={SettingInformation} />
       </Stack.Navigator>
     </NavigationContainer>
   );

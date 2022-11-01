@@ -5,7 +5,6 @@ export const ProfileBody = ({ name, imageProfile, post, follower, following, acc
     return (
         <View>
             {
-
                 <View style={styles.container}>
                     <View style={styles.leftContainer}>
                         <Image source={imageProfile} style={styles.imageProfile} />
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        paddingVertical: 20
+        paddingVertical: 20,
     },
     leftContainer: {
         alignItems: 'center'

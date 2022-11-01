@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native-virtualized-view';
 import { followData } from '../../data/followData';
 import { useNavigation } from '@react-navigation/native';
 
-const Activity = () => {
+const Activity = ({ id = 2 }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -13,20 +13,25 @@ const Activity = () => {
         <Text style={styles.thisWeek}>Tuần này</Text>
         <View style={styles.listFollow}>
           {
-            followData.slice(0, 4).map((data, index) => {
+            followData.map((data, index) => {
+
               return (
-                <TouchableOpacity onPress={() => navigation.push('FriendProfile', {
-                  id: data.id,
-                  name: data.name,
-                  image: data.profileImage,
-                  follower: data.followers,
-                  following: data.following,
-                  post: data.posts,
-                  accountName: data.accountName
-                })} key={index}>
-                  <Text>{data.name}, </Text>
-                </TouchableOpacity>
+                data.id === id ? null : (
+                  <TouchableOpacity onPress={() => navigation.push('FriendProfile', {
+                    id: data.id,
+                    name: data.name,
+                    image: data.profileImage,
+                    follower: data.followers,
+                    following: data.following,
+                    post: data.posts,
+                    accountName: data.accountName
+                  })} key={index}>
+                    <Text>{data.name}, </Text>
+                  </TouchableOpacity>
+                )
               )
+
+
             })
           }
           <Text>đã theo dõi bạn</Text>
