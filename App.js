@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack';
@@ -9,20 +9,21 @@ import Activity from "./src/components/screens/Activity";
 import Profile from "./src/components/screens/Profile";
 import { Home_SVG, Home_SVG_Cli, Search_SVG, Search_SVG_Cli, Reel_SVG, Heart_SVG, Heart_SVG_Cli, NewPost_SVG } from "./src/svg-view";
 import Status from "./src/components/screenComponents/StatusStories";
-import { View, Image } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import users from "./src/data/user";
 import FriendProfile from "./src/components/screenComponents/FriendProfile";
 import EditProfile from "./src/components/screenComponents/EditProfile";
 import SettingInformation from "./src/components/screenComponents/SettingInformation";
+import Login from "./src/components/screens/Login";
 const App = () => {
 
   const Stack = createStackNavigator();
   const Tab = createBottomTabNavigator();
 
-
   const BottomTabScreen = () => {
     return (
       <Tab.Navigator
+        initialRouteName="Home"
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
           headerShown: false,
@@ -75,10 +76,12 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Login"
         screenOptions={{
           headerShown: false,
         }}
       >
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Bottom" component={BottomTabScreen} />
         <Stack.Screen name="Status" component={Status} />
         <Stack.Screen

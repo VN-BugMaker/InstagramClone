@@ -6,7 +6,7 @@ import ButtonFollow from './ButtonFollow';
 import { MorePeople, MorePeopleClick } from '../../svg-view';
 import { useNavigation } from '@react-navigation/native';
 
-const MoreFollow = ({ id, message, idUser = 2, name, imageProfile, accountName }) => {
+const MoreFollow = ({ id, message, idUser = 2, name, imageProfile, accountName, }) => {
     const navigation = useNavigation();
     const [close, setClose] = useState(false);
     const [moreFollow, setMoreFollow] = useState(false);
@@ -24,7 +24,7 @@ const MoreFollow = ({ id, message, idUser = 2, name, imageProfile, accountName }
                             </>
                         ) : (
                             <>
-                                <TouchableOpacity activeOpacity={0.7} style={styles.buttonEditProfile}
+                                <TouchableOpacity activeOpacity={0.7} style={[styles.buttonEditProfile]}
                                     onPress={() => navigation.push('EditProfile', {
                                         name: name,
                                         imageProfile: imageProfile,
@@ -36,8 +36,6 @@ const MoreFollow = ({ id, message, idUser = 2, name, imageProfile, accountName }
                             </>
                         )
                     }
-
-
                     <TouchableOpacity activeOpacity={1} onPress={() => setMoreFollow(!moreFollow)} style={styles.addFollow}>
                         {moreFollow ? <MorePeopleClick /> : <MorePeople />}
                     </TouchableOpacity>

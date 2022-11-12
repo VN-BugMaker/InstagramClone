@@ -1,55 +1,97 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { followData } from '../../data/followData';
 import { ProfileBody } from '../screenComponents/ProfileBody';
 import MoreFollow from '../screenComponents/MoreFollow';
 import Feather from 'react-native-vector-icons/Feather';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomTabProfile from '../screenComponents/BottomTabProfile';
 
-const Profile = ({ idUser = 2 }) => {
+const Profile = ({ idUser = 2, token }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const bottomSheetRef = useRef(null);
+  const snapPoints = ['50%'];
+  const handleSheetChanges = (index) => {
+
+    console.log(bottomSheetRef.current?.present());
+    setIsOpen(true)
+
+  };
   return (
-    <View style={styles.container}>
-      {
-        followData.map((item, index) => {
-          return (
+    <View style={[styles.container, {
+      // backgroundColor: isOpen ? "#b9b9b9" : "#ffff",
+    }]}>
+      <BottomSheetModalProvider>
 
-            item.id === idUser ?
-              (
-                <View key={index}>
-                  <View>
-                    <View style={styles.header}>
-                      <View style={styles.headerLeft}>
-                        <Text style={styles.nameProfile} >{item.name}</Text>
-                        <Feather name='chevron-down' style={styles.chevronDownIcon} />
+        {
+          followData.map((item, index) => {
+            return (
+
+              item.id === idUser ?
+                (
+                  <View key={index}>
+                    <View>
+                      <View style={styles.header}>
+                        <View style={styles.headerLeft}>
+                          <Text style={styles.nameProfile} >{item.name}</Text>
+                          <Feather name='chevron-down' style={styles.chevronDownIcon} />
+                        </View>
+                        <View style={styles.headerRight}>
+                          <Feather name='plus' style={styles.plusIcon} />
+                          <Feather onPress={handleSheetChanges} name='menu' style={styles.menuIcon} />
+
+
+                        </View>
                       </View>
-                      <View style={styles.headerRight}>
-                        <Feather name='plus' style={styles.plusIcon} />
-                        <Feather name='menu' style={styles.menuIcon} />
-                      </View>
+                      <ProfileBody
+                        name={item.name}
+                        imageProfile={item.profileImage}
+                        post={item.posts}
+                        follower={item.followers}
+                        following={item.following}
+                        accountName={item.accountName}
+                      />
                     </View>
-                    <ProfileBody
-                      name={item.name}
-                      imageProfile={item.profileImage}
-                      post={item.posts}
-                      follower={item.followers}
-                      following={item.following}
-                      accountName={item.accountName}
-                    />
+                    <View>
+                      <MoreFollow
+                        id={idUser}
+                        name={item.name}
+                        imageProfile={item.profileImage}
+                        accountName={item.accountName}
+                      // color={isOpen ? "#a5a5a5" : "#efefef"}
+                      />
+                    </View>
                   </View>
-                  <View>
-                    <MoreFollow
-                      id={idUser}
-                      name={item.name}
-                      imageProfile={item.profileImage}
-                      accountName={item.accountName}
-                    />
-                  </View>
-                </View>
-              ) : null
-          )
+                ) : null
+            )
 
-        })
-      }
+          })
+        }
+        <View style={styles.bottomTab}>
+          <BottomTabProfile token={token} />
+        </View>
+        <BottomSheetModal
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          onDismiss={() => setIsOpen(false)}
+          backdropComponent={
+            props => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+              />
+            )
+          }
+        >
+          <View>
 
+          </View>
+
+        </BottomSheetModal>
+
+      </BottomSheetModalProvider>
     </View>
   )
 }
@@ -90,6 +132,11 @@ const styles = StyleSheet.create({
   menuIcon: {
     fontSize: 30,
     paddingHorizontal: 10
+  },
+  bottomTab: {
+    width: '100%',
+    height: '100%',
+    marginTop: 10
   },
 
 })
