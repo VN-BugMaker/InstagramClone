@@ -1,5 +1,5 @@
-import * as React from "react";
-import Svg, { Path, Rect, Ellipse } from "react-native-svg";
+import * as React from 'react';
+import Svg, { Path, Rect, Ellipse } from 'react-native-svg';
 
 export const Reel_SVG = (props) => (
   <Svg
@@ -120,7 +120,6 @@ export const Search_SVG_Cli = (props) => (
   </Svg>
 );
 
-
 export const Heart_SVG = (props) => (
   <Svg
     width={24}
@@ -150,7 +149,7 @@ export const Heart_SVG_Cli = (props) => (
   >
     <Path
       d="M9.95647 1.67679L10.5379 2.35621L11.1874 1.67679C13.4727 -0.608088 17.016 -0.501815 19.3658 1.67679L19.5314 1.8362C21.8167 4.12108 21.2567 8.68799 19.0777 11.0374L18.7911 11.3402L18.472 11.6656C17.2424 12.9001 11.368 17.952 11.368 17.952C10.8675 18.3684 10.1392 18.3619 9.64635 17.9366L7.85616 16.3829L6.2623 14.981C4.36774 13.3013 2.94567 11.9868 1.99608 11.0374C-0.343637 8.69809 -0.793921 4.17548 1.54579 1.8362C3.88551 -0.50308 7.61676 -0.66249 9.95647 1.67679Z"
-      fill={props.color === 'black' ? "#262626" : '#FA383E'}
+      fill={props.color === 'black' ? '#262626' : '#FA383E'}
     />
   </Svg>
 );

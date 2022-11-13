@@ -5,14 +5,18 @@ import Feather from 'react-native-vector-icons/Feather';
 import { ProfileBody } from './ProfileBody';
 import MoreFollow from './MoreFollow';
 
-
 const FriendProfile = ({ route, navigation }) => {
-  const { id, name, image, following, follower, post, accountName } = route.params;
+  const { id, name, image, following, follower, post, accountName } =
+    route.params;
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Ionic onPress={() => navigation.goBack()} name="arrow-back" style={styles.arrowBack} />
+        <Ionic
+          onPress={() => navigation.goBack()}
+          name="arrow-back"
+          style={styles.arrowBack}
+        />
         <View style={styles.insideHeader}>
           <Text style={styles.nameProfile}>{name}</Text>
           <Feather name="more-vertical" style={styles.moreVertical} />
@@ -26,15 +30,10 @@ const FriendProfile = ({ route, navigation }) => {
         following={following}
         accountName={accountName}
       />
-      <MoreFollow
-        message={id}
-        id={id}
-      />
-
+      <MoreFollow message={id} id={id} />
     </View>
-  )
-
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -48,10 +47,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   arrowBack: {
-    fontSize: 30,
+    fontSize: 30
   },
   moreVertical: {
-    fontSize: 19,
+    fontSize: 19
   },
   nameProfile: {
     fontSize: 20,
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: "90%",
+    width: '90%'
   },
   textSuggest: {
     fontWeight: '500',
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
   close: {
     position: 'absolute',
     top: 7,
-    right: 7,
+    right: 7
   },
   insideSuggestItem: {
     width: 155,
@@ -131,5 +130,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   }
-})
-export default FriendProfile
+});
+export default FriendProfile;

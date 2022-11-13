@@ -11,11 +11,7 @@ const Status = ({ route, navigation }) => {
         height: '100%'
       }}
     >
-      <StatusBar
-        hidden={false}
-        backgroundColor='#000000'
-        barStyle='white'
-      />
+      <StatusBar hidden={false} backgroundColor="#000000" barStyle="white" />
       <Image
         source={image}
         style={{
@@ -25,9 +21,18 @@ const Status = ({ route, navigation }) => {
           marginTop: '10%'
         }}
       />
-        <TextInput style={{ height: 43, width: 271,borderRadius:20,borderStyle:'solid',borderWidth:1,backgroundColor:'#666666' }}></TextInput>
+      <TextInput
+        style={{
+          height: 43,
+          width: 271,
+          borderRadius: 20,
+          borderStyle: 'solid',
+          borderWidth: 1,
+          backgroundColor: '#666666'
+        }}
+      ></TextInput>
     </View>
-  )
-}
+  );
+};
 
-export default Status
+export default Status;

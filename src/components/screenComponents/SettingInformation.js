@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 
-const SettingInformation = ({route,navigation}) => {
-    const {mails,phone,birthDay} = route.params;
+const SettingInformation = ({ route, navigation }) => {
+  const { mails, phone, birthDay } = route.params;
   return (
     <View navigation={navigation}>
       <Text>{mails}</Text>
     </View>
-  )
-}
+  );
+};
 
-export default SettingInformation
+export default SettingInformation;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
