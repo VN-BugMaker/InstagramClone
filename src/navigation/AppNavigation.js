@@ -11,21 +11,23 @@ const AppNavigation = () => {
   return (
     <NavigationContainer>
       {isLoading ? (
-        <View
-          styles={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <ActivityIndicator color={'#000'} size={'large'} />
+        <View style={styles.loading}>
+          <ActivityIndicator color={'#999999'} size={'large'} />
         </View>
-      ) : null}
-      {userToken === null ? <Login /> : <AppStack />}
+      ) : userToken === null ? (
+        <Login />
+      ) : (
+        <AppStack />
+      )}
     </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: 'center'
+  }
+});
 
 export default AppNavigation;

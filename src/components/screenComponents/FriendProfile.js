@@ -1,14 +1,23 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import React from 'react';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import { ProfileBody } from './ProfileBody';
 import MoreFollow from './MoreFollow';
+import BottomTabProfile from './BottomTabProfile';
 
 const FriendProfile = ({ route, navigation }) => {
-  const { id, name, image, following, follower, post, accountName } =
-    route.params;
-
+  const {
+    id,
+    name,
+    image,
+    following,
+    follower,
+    post,
+    accountName,
+    data,
+    itemFollow
+  } = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -29,8 +38,10 @@ const FriendProfile = ({ route, navigation }) => {
         follower={follower}
         following={following}
         accountName={accountName}
+        data={data}
       />
-      <MoreFollow message={id} id={id} />
+      <MoreFollow message={id} id={id} itemFollow={itemFollow} />
+      <BottomTabProfile id={id} />
     </View>
   );
 };
@@ -39,12 +50,12 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
-    padding: 10
+    backgroundColor: 'white'
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 10
   },
   arrowBack: {
     fontSize: 30

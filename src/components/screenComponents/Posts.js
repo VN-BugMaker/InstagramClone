@@ -1,12 +1,11 @@
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TouchableOpacity
-} from 'react-native';
-import React, { useState, useRef } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import React, {
+  useState,
+  useRef,
+  useContext,
+  useEffect,
+  useCallback
+} from 'react';
 import postData from '../../data/postData';
 import {
   Comment_SVG,
@@ -17,14 +16,48 @@ import {
   Share_SVG
 } from '../../svg-view';
 import styles from '../../../assets/styles/styles';
-
+import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Posts = () => {
-  const [data, setData] = useState(postData);
+  const navigation = useNavigation();
+  const [data, setData] = useState();
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isRender, setIsRender] = useState();
+  const [idItem, setIdItem] = useState();
+  const [isRender, setIsRender] = useState(false);
+  const { userToken, idUser, avatarUser } = useContext(AuthContext);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch('http://192.168.0.38:5000/api/posts', {
+        method: 'GET',
+        headers: { Authorization: userToken }
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.posts);
+          setTimeout(() => {
+            AsyncStorage.removeItem('access_token');
+            AsyncStorage.removeItem('idUser');
+            AsyncStorage.removeItem('avatarUser');
+            AsyncStorage.removeItem('username');
+          }, 10000000);
+        });
+    };
+    loadPosts();
+  }, [isRender]);
+
+  const likePost = (idPost, like) => {
+    fetch(`http://192.168.0.38:5000/api/post/${idPost}/${like}`, {
+      method: 'PATCH',
+      headers: { Authorization: userToken }
+    });
+  };
   const onViewableItemsChanged = useRef((item) => {
     setCurrentSlideIndex(item.viewableItems[0].index);
-
+    setIdItem(item.viewableItems[0].index);
+    // const newItem = ...item.viewableItems
     console.log(item.viewableItems[0].index);
   });
 
@@ -32,28 +65,37 @@ const Posts = () => {
     itemVisiblePercentThreshold: 50
   });
 
-  const renderImage = ({ item }) => {
-    return <Image source={item.image} style={styles.imagePost} />;
-  };
-
-  const onChangeLike = (item) => {
-    const newData = data.map((newItem) => {
-      if (newItem.id === item.id) {
-        item.clickLike = !item.clickLike;
-        return newItem;
-      }
-      return newItem;
-    });
-    setData(newData);
+  const handleLike = (item) => {
+    likePost(
+      item._id,
+      item.likes.find((item) => item._id === idUser) ? 'unlike' : 'like'
+    );
     setIsRender(!isRender);
   };
+
+  const renderImage = ({ item }) => {
+    return (
+      <Image
+        source={{ uri: item.uri ? item.uri : item.url ? item.url : item }}
+        style={styles.imagePost}
+        resizeMethod={'resize'}
+      />
+    );
+  };
+
   const renderPost = ({ item }) => {
     return (
       <View>
         <View style={styles.headerPost}>
-          <Image source={item.avatar} style={styles.avatarPost} />
+          <Image
+            source={{
+              uri: item.user.avatar
+            }}
+            style={styles.avatarPost}
+            resizeMethod={'resize'}
+          />
           <View style={styles.infoPost}>
-            <Text style={styles.nameUser}>{item.name}</Text>
+            <Text style={styles.nameUser}>{item.user.username}</Text>
           </View>
           <View style={styles.optionPost}>
             <Options_SVG />
@@ -61,67 +103,92 @@ const Posts = () => {
         </View>
         <View>
           <FlatList
-            data={item.postImage}
+            data={item.images}
             renderItem={renderImage}
             horizontal
             pagingEnabled
-            keyExtractor={(data) => data.idPost}
+            keyExtractor={(item, index) => String(index)}
             showsHorizontalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChanged.current}
             viewabilityConfig={viewabilityConfig.current}
           />
         </View>
-        <View style={styles.pagination}>
-          <Text style={styles.paginationNumber}>
-            {currentSlideIndex + 1}/{item.postImage.length}
-          </Text>
-        </View>
+        {item.images.length > 1 ? (
+          <View style={styles.pagination}>
+            <Text style={styles.paginationNumber}>
+              {idItem + 1}/{item.images.length}
+            </Text>
+          </View>
+        ) : null}
+
         <View style={styles.interactPost}>
           <View style={styles.likePost}>
-            <TouchableOpacity onPress={() => onChangeLike(item)}>
-              {item.clickLike === true ? (
+            <TouchableOpacity delayPressIn={0} onPress={() => handleLike(item)}>
+              {item?.likes.find((item) => item._id === idUser) ? (
                 <Heart_SVG_Cli like="like" />
               ) : (
                 <Heart_SVG />
               )}
             </TouchableOpacity>
-            <View style={styles.commentPost}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.push('Comments', {
+                  id: item._id,
+                  content: item.content,
+                  userPost: item.user.username,
+                  avatarUser: avatarUser
+                })
+              }
+              style={styles.commentPost}
+            >
               <Comment_SVG />
-            </View>
+            </TouchableOpacity>
             <Share_SVG />
           </View>
           <View style={styles.pgPost}>
-            {item.postImage.map((item, index) => {
-              return (
-                <View
-                  key={item.idPost}
-                  style={{
-                    width: currentSlideIndex === index ? 6 : 4,
-                    height: currentSlideIndex === index ? 6 : 4,
-                    borderRadius: 3,
-                    backgroundColor:
-                      currentSlideIndex === index ? '#3897F0' : 'black',
-                    opacity: currentSlideIndex === index ? 1 : 0.15,
-                    marginHorizontal: 2
-                  }}
-                ></View>
-              );
-            })}
+            {item.images.length > 1 &&
+              item.images.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      width: currentSlideIndex === index ? 6 : 4,
+                      height: currentSlideIndex === index ? 6 : 4,
+                      borderRadius: 3,
+                      backgroundColor:
+                        currentSlideIndex === index ? '#3897F0' : 'black',
+                      opacity: currentSlideIndex === index ? 1 : 0.15,
+                      marginHorizontal: 2
+                    }}
+                  ></View>
+                );
+              })}
           </View>
           <View style={styles.savePost}>
             <Save_SVG />
           </View>
         </View>
         <View>
-          <Text style={styles.detailLike}> {item.like} lượt thích</Text>
+          <Text style={styles.detailLike}>{item.likes.length} lượt thích</Text>
         </View>
         <View style={styles.titlePost}>
-          <Text style={styles.titleName}>{item.name}</Text>
-          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.titleName}>{item.user.username}</Text>
+          <Text style={styles.title}>{item.content}</Text>
         </View>
-        <Text style={styles.seenComment}>
-          Xem tất cả {item.comment} bình luận
-        </Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.push('Comments', {
+              id: item._id,
+              content: item.content,
+              userPost: item.user.username,
+              avatarUser: avatarUser
+            })
+          }
+        >
+          <Text style={styles.seenComment}>
+            Xem tất cả {item.comments.length} bình luận
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -131,8 +198,8 @@ const Posts = () => {
         data={data}
         horizontal={false}
         renderItem={renderPost}
-        keyExtractor={(data) => data.id}
-        extraData={isRender}
+        keyExtractor={(item) => item._id}
+        extraData={!isRender}
         showsVerticalScrollIndicator={false}
         scrollEnabled={false}
       />

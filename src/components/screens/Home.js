@@ -1,5 +1,11 @@
-import { View, Text, StatusBar } from 'react-native';
-import { React } from 'react';
+import {
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  RefreshControl
+} from 'react-native';
+import { React, useRef, useState } from 'react';
 import { ScrollView } from 'react-native-virtualized-view';
 import { useFonts } from 'expo-font';
 import { Messenger_SVG, NewPost_SVG } from '../../svg-view';
@@ -7,7 +13,14 @@ import Stories from '../screenComponents/Stories';
 import Posts from '../screenComponents/Posts';
 import styles from '../../../assets/styles/styles';
 
-const Home = () => {
+const Home = ({ navigation }) => {
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 100);
+  };
   const [fontsLoaded] = useFonts({
     'Lobster-Regular': require('../../../assets/fonts/Lobster-Regular.ttf')
   });
@@ -24,14 +37,26 @@ const Home = () => {
       <View style={styles.headerWrap}>
         <Text style={styles.titleWrapper}>Instagram</Text>
         <View style={styles.titleWrapperRight}>
-          <NewPost_SVG />
-          <View style={{ paddingLeft: 23 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('AddPost')}>
+            <NewPost_SVG />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Message')}
+            style={{ paddingLeft: 23 }}
+          >
             <Messenger_SVG />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
-      <ScrollView>
-        <View style={styles.storyWrapper}>
+
+      <ScrollView
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        // refreshControl={
+        //   <RefreshControl   />
+        // }
+      >
+        <View style={[styles.storyWrapper, { flex: 1 }]}>
           <Stories />
         </View>
         <Posts />

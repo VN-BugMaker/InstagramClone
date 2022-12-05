@@ -11,8 +11,8 @@ import React, { useState, useContext } from 'react';
 import { useFonts } from 'expo-font';
 import { AuthContext } from '../../context/AuthContext';
 
-const Login = ({ navigation }) => {
-  const { login, isLoading } = useContext(AuthContext);
+const Login = () => {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [fontsLoaded] = useFonts({
@@ -24,7 +24,6 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator animating={!isLoading} />
       <Text style={styles.logo}>Instagram</Text>
       <TextInput
         style={styles.txtInput}
@@ -36,6 +35,8 @@ const Login = ({ navigation }) => {
         style={styles.txtInput}
         onChangeText={(pass) => setPassword(pass)}
         placeholder={'Mật khẩu'}
+        secureTextEntry={true}
+        autoCapitalize="none"
       />
       <TouchableOpacity
         onPress={() => login({ email, password })}

@@ -10,6 +10,11 @@ import EditProfile from '../components/screenComponents/EditProfile';
 import SettingInformation from '../components/screenComponents/SettingInformation';
 import Login from '../components/screens/Login';
 import TabNavigator from './TabNavigator';
+import AddPost from '../components/screens/AddPost';
+import FollowScreen from '../components/screens/FollowScreen';
+import Comments from '../components/screenComponents/Comments';
+import Message from '../components/screens/Message';
+import MessageDetail from '../components/screenComponents/MessageDetail';
 
 const AppStack = () => {
   const Stack = createStackNavigator();
@@ -38,6 +43,41 @@ const AppStack = () => {
         }}
       />
       <Stack.Screen name="SettingInformation" component={SettingInformation} />
+      <Stack.Screen
+        name="AddPost"
+        component={AddPost}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+        }}
+      />
+      <Stack.Screen
+        name="FollowScreen"
+        component={FollowScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="Comments"
+        component={Comments}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={Message}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="MessageDetail"
+        component={MessageDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
     </Stack.Navigator>
   );
 };

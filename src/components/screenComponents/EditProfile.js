@@ -26,7 +26,7 @@ const EditProfile = ({ route, navigation }) => {
         <Feather name="check" style={styles.checkIcon} />
       </View>
       <View style={styles.viewImage}>
-        <Image source={imageProfile} style={styles.imageProfile} />
+        <Image source={{ uri: imageProfile }} style={styles.imageProfile} />
         <Text style={styles.titleChangeImage}>Đổi ảnh đại diện</Text>
       </View>
       <View style={styles.body}>

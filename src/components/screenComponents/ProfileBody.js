@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export const ProfileBody = ({
   name,
@@ -7,28 +8,50 @@ export const ProfileBody = ({
   post,
   follower,
   following,
-  accountName
+  accountName,
+  data
 }) => {
+  const navigation = useNavigation();
   return (
     <View>
       {
         <View style={styles.container}>
           <View style={styles.leftContainer}>
-            <Image source={imageProfile} style={styles.imageProfile} />
+            <Image source={{ uri: imageProfile }} style={styles.imageProfile} />
             <Text style={styles.nameProfile}>{accountName}</Text>
           </View>
-          <View style={styles.rightContainer}>
+          <TouchableOpacity style={styles.rightContainer}>
             <Text style={styles.text}>{post}</Text>
             <Text>Bài viết</Text>
-          </View>
-          <View style={styles.rightContainer}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.push('FollowScreen', {
+                tab: 'Followers',
+                follower,
+                following,
+                data
+              })
+            }
+            style={styles.rightContainer}
+          >
             <Text style={styles.text}>{follower}</Text>
             <Text>Người theo dõi</Text>
-          </View>
-          <View style={styles.rightContainer}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.push('FollowScreen', {
+                tab: 'Followings',
+                follower,
+                following,
+                data
+              })
+            }
+            style={styles.rightContainer}
+          >
             <Text style={styles.text}>{following}</Text>
             <Text>Đang theo dõi</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       }
     </View>

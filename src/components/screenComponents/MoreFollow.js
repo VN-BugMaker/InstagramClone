@@ -4,33 +4,104 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  StyleSheet
+  StyleSheet,
+  FlatList,
+  RefreshControl
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { followData } from '../../data/followData';
 import ButtonFollow from './ButtonFollow';
 import { MorePeople, MorePeopleClick } from '../../svg-view';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
 
 const MoreFollow = ({
   id,
   message,
-  idUser = 2,
   name,
   imageProfile,
-  accountName
+  accountName,
+  itemFollow
 }) => {
   const navigation = useNavigation();
+  const [data, setData] = useState([]);
   const [close, setClose] = useState(false);
   const [moreFollow, setMoreFollow] = useState(false);
+  const { userToken, idUser } = useContext(AuthContext);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const getSuggest = async () => {
+    await fetch(`http://192.168.0.38:5000/api/suggestionsUser`, {
+      method: 'GET',
+      headers: { Authorization: userToken }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.users);
+      });
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    getSuggest();
+  }, [refreshing]);
+
+  const renderSuggest = ({ item }) => {
+    return (
+      <View style={{ marginLeft: 6 }}>
+        {item._id === id ? null : (
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() =>
+              navigation.push('FriendProfile', {
+                id: item._id,
+                name: item.username,
+                image: item.avatar,
+                follower: item?.followers.length,
+                following: item?.following.length,
+                post: item.followers.length,
+                accountName: item.fullname,
+                itemFollow: item,
+                data: item
+              })
+            }
+          >
+            <View style={styles.insideSuggestItem}>
+              <TouchableOpacity
+                onPress={() => setClose(true)}
+                style={styles.close}
+              >
+                <AntDesign name="close" style={styles.buttonClose} />
+              </TouchableOpacity>
+              <Image
+                source={{ uri: item.avatar }}
+                style={styles.imageItemSuggest}
+              />
+              <Text style={styles.textName}>{item.username}</Text>
+              <Text style={styles.textAccountName}>{item.fullname}</Text>
+              <View style={styles.buttonFollow}>
+                <ButtonFollow width={136} itemFollow={item} />
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
+
   return (
     <View>
       <View>
         <View style={styles.containerFollow}>
           {message ? (
             <>
-              <ButtonFollow width={170} />
+              <ButtonFollow width={170} itemFollow={itemFollow} />
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.buttonMessage}
@@ -67,50 +138,19 @@ const MoreFollow = ({
       {moreFollow ? (
         <View>
           <Text style={styles.textSuggest}>Gợi ý cho bạn</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {followData.map((item, index) => {
-              return (
-                <View key={index} style={{ marginLeft: 6 }}>
-                  {item.id === id || item.id === idUser || close ? null : (
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      onPress={() =>
-                        navigation.push('FriendProfile', {
-                          id: item.id,
-                          name: item.name,
-                          image: item.profileImage,
-                          follower: item.followers,
-                          following: item.following,
-                          post: item.posts,
-                          accountName: item.accountName
-                        })
-                      }
-                    >
-                      <View style={styles.insideSuggestItem}>
-                        <TouchableOpacity
-                          onPress={() => setClose(true)}
-                          style={styles.close}
-                        >
-                          <AntDesign name="close" style={styles.buttonClose} />
-                        </TouchableOpacity>
-                        <Image
-                          source={item.profileImage}
-                          style={styles.imageItemSuggest}
-                        />
-                        <Text style={styles.textName}>{item.name}</Text>
-                        <Text style={styles.textAccountName}>
-                          {item.accountName}
-                        </Text>
-                        <View style={styles.buttonFollow}>
-                          <ButtonFollow width={136} />
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              );
-            })}
-          </ScrollView>
+          {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
+          {
+            <FlatList
+              data={data}
+              renderItem={renderSuggest}
+              keyExtractor={(item, index) => String(index)}
+              horizontal
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            />
+          }
+          {/* </ScrollView> */}
         </View>
       ) : null}
     </View>

@@ -1,6 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
-import React, { useContext, useRef, useState } from 'react';
-import { followData } from '../../data/followData';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  RefreshControl,
+  SafeAreaView
+} from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ProfileBody } from '../screenComponents/ProfileBody';
 import MoreFollow from '../screenComponents/MoreFollow';
 import Feather from 'react-native-vector-icons/Feather';
@@ -11,33 +18,63 @@ import {
 } from '@gorhom/bottom-sheet';
 import BottomTabProfile from '../screenComponents/BottomTabProfile';
 import { AuthContext } from '../../context/AuthContext';
+import { ScrollView } from 'react-native-virtualized-view';
 
-const Profile = ({ idUser = 2, token }) => {
+const Profile = ({ idU = 2 }) => {
   const { logout } = useContext(AuthContext);
-  const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState([]);
+  const { userToken, idUser } = useContext(AuthContext);
+  const URL = 'http://192.168.0.38:5000/api/user';
   const bottomSheetRef = useRef(null);
   const snapPoints = ['50%'];
-  const handleSheetChanges = (index) => {
-    console.log(bottomSheetRef.current?.present());
-    setIsOpen(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 100);
   };
+
+  const handleSheetChanges = (index) => {
+    bottomSheetRef.current?.present();
+  };
+
+  const getProFile = async () => {
+    await fetch(`http://192.168.0.38:5000/api/user/${idUser}`, {
+      method: 'GET',
+      headers: { Authorization: userToken }
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.user);
+      });
+  };
+
+  useEffect(() => {
+    getProFile();
+  }, []);
+
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          // backgroundColor: isOpen ? "#b9b9b9" : "#ffff",
-        }
-      ]}
-    >
-      <BottomSheetModalProvider>
-        {followData.map((item, index) => {
-          return item.id === idUser ? (
-            <View key={index}>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <BottomSheetModalProvider>
+          {data._id === idUser ? (
+            <View>
+              {/* <ScrollView
+                style={{ backgroundColor: 'red ' }}
+                scrollEnabled={false}
+                nestedScrollEnabled={true}
+                horizontal={false}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                // onRefresh={
+                // <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                // }
+              > */}
               <View>
                 <View style={styles.header}>
                   <View style={styles.headerLeft}>
-                    <Text style={styles.nameProfile}>{item.name}</Text>
+                    <Text style={styles.nameProfile}>{data.username}</Text>
                     <Feather
                       name="chevron-down"
                       style={styles.chevronDownIcon}
@@ -52,48 +89,50 @@ const Profile = ({ idUser = 2, token }) => {
                     />
                   </View>
                 </View>
-                <ProfileBody
-                  name={item.name}
-                  imageProfile={item.profileImage}
-                  post={item.posts}
-                  follower={item.followers}
-                  following={item.following}
-                  accountName={item.accountName}
-                />
+
+                <View>
+                  <ProfileBody
+                    name={data.username}
+                    imageProfile={data.avatar}
+                    post={data.followers.length}
+                    follower={data.followers.length}
+                    following={data.following.length}
+                    accountName={data.fullname}
+                    data={data}
+                  />
+                </View>
               </View>
               <View>
                 <MoreFollow
                   id={idUser}
-                  name={item.name}
-                  imageProfile={item.profileImage}
-                  accountName={item.accountName}
-                  // color={isOpen ? "#a5a5a5" : "#efefef"}
+                  name={data.username}
+                  imageProfile={data.avatar}
+                  accountName={data.fullname}
+                  itemFollow={data}
                 />
               </View>
+              {/* </ScrollView> */}
             </View>
-          ) : null;
-        })}
-        <View style={styles.bottomTab}>
-          <BottomTabProfile token={token} />
-        </View>
-        <BottomSheetModal
-          ref={bottomSheetRef}
-          index={0}
-          snapPoints={snapPoints}
-          onDismiss={() => setIsOpen(false)}
-          backdropComponent={(props) => (
-            <BottomSheetBackdrop
-              {...props}
-              disappearsOnIndex={-1}
-              appearsOnIndex={0}
-            />
-          )}
-        >
-          <View>
-            <Button title="Logout" onPress={() => logout()} />
-          </View>
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
+          ) : null}
+          <BottomTabProfile id={idUser} />
+          <BottomSheetModal
+            ref={bottomSheetRef}
+            index={0}
+            snapPoints={snapPoints}
+            backdropComponent={(props) => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+              />
+            )}
+          >
+            <View>
+              <Button title="Logout" onPress={() => logout()} />
+            </View>
+          </BottomSheetModal>
+        </BottomSheetModalProvider>
+      </View>
     </View>
   );
 };
@@ -132,11 +171,6 @@ const styles = StyleSheet.create({
   menuIcon: {
     fontSize: 30,
     paddingHorizontal: 10
-  },
-  bottomTab: {
-    width: '100%',
-    height: '100%',
-    marginTop: 10
   }
 });
 
