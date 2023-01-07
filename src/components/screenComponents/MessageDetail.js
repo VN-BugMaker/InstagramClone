@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   StyleSheet,
@@ -7,34 +8,91 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Dot from 'react-native-vector-icons/Entypo';
-
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { VideoSvg } from '../../svg-view';
 import { AuthContext } from '../../context/AuthContext';
 import { ScrollView } from 'react-native-virtualized-view';
+import { URL } from './api/Url';
 const MessageDetail = ({ route, navigation }) => {
   const { userToken } = useContext(AuthContext);
   const { username, avatar, _id, fullname } = route.params;
   const [reload, setReload] = useState(false);
-  const [message, setMessage] = useState(false);
+  const [message, setMessage] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const page = useRef();
+
+  useEffect(() => {
+    setIsLoading(true);
+    getDetailMessage();
+  }, [pageCurrent]);
   const getDetailMessage = async () => {
-    await fetch(`http://192.168.0.38:5000/api/message/${_id}`, {
+    await fetch(`${URL}/api/message/${_id}?limit=${14 * pageCurrent}`, {
       method: 'GET',
       headers: { Authorization: userToken }
     })
       .then((res) => res.json())
       .then((res) => {
-        setMessage(res.messages.reverse().map((item) => item));
-        // .text ? item.text : item.call ? item.call : item.media
+        setMessage([...res.messages.map((item) => item)]);
         setReload(false);
+        setIsLoading(false);
       });
   };
-  useEffect(() => {
-    getDetailMessage();
-  }, [reload]);
-
+  const renderFooter = () => {
+    return (
+      message && (
+        <View style={styles.body}>
+          <Image
+            source={{ uri: avatar }}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 100,
+              marginLeft: 20
+            }}
+          />
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{fullname}</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>{username}</Text>
+            <Dot
+              name="dot-single"
+              style={{ fontSize: 6, paddingHorizontal: 3 }}
+            />
+            <Text style={{ fontSize: 16 }}>Instagram</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              opacity: 0.4
+            }}
+          >
+            <Text style={{ fontSize: 16 }}>12 người theo dõi</Text>
+            <Dot
+              name="dot-single"
+              style={{ fontSize: 6, paddingHorizontal: 3 }}
+            />
+            <Text style={{ fontSize: 16 }}>3 bài viết</Text>
+          </View>
+        </View>
+      )
+    );
+  };
+  const handleLoadMore = () => {
+    if (!isLoading) {
+      setPageCurrent(pageCurrent + 1);
+      setIsLoading(true);
+    }
+  };
   const renderMessage = ({ item }) => {
     return (
       <View>
@@ -79,10 +137,16 @@ const MessageDetail = ({ route, navigation }) => {
                   paddingEnd: 10,
                   flexDirection: 'row',
                   maxWidth: '60%',
-                  padding: 10
+                  padding: 10,
+                  width: '50%',
+                  height: 65
                 }}
               >
-                <Text>{item.call.times}</Text>
+                {item.call.video ? (
+                  <Text>{1}</Text>
+                ) : (
+                  <Text>{item.call.times}</Text>
+                )}
               </View>
             ) : (
               item.media.map((item, index) => {
@@ -186,67 +250,40 @@ const MessageDetail = ({ route, navigation }) => {
           </View>
         </View>
       </View>
-      <ScrollView style={{ marginBottom: 75 }}>
-        <View style={styles.body}>
-          <Image
-            source={{ uri: avatar }}
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: 100,
-              marginLeft: 20
-            }}
-          />
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{fullname}</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>{username}</Text>
-            <Dot
-              name="dot-single"
-              style={{ fontSize: 6, paddingHorizontal: 3 }}
-            />
-            <Text style={{ fontSize: 16 }}>Instagram</Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              opacity: 0.4
-            }}
-          >
-            <Text style={{ fontSize: 16 }}>12 người theo dõi</Text>
-            <Dot
-              name="dot-single"
-              style={{ fontSize: 6, paddingHorizontal: 3 }}
-            />
-            <Text style={{ fontSize: 16 }}>3 bài viết</Text>
-          </View>
-        </View>
 
-        {/* content */}
+      {/* content */}
 
-        <View style={{ marginTop: 100 }}>
-          <FlatList
-            scrollEnabled
-            data={message}
-            renderItem={(item) => renderMessage(item)}
-            keyExtractor={(item, index) => String(index)}
-          />
-        </View>
-      </ScrollView>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={true}
+        data={message}
+        renderItem={(item) => renderMessage(item)}
+        keyExtractor={(item, index) => String(index)}
+        // ListHeaderComponent={() => renderHeader()}
+        ListFooterComponent={() => renderFooter()}
+        // ItemSeparatorComponent={handleLoadMore}
+        // stickyHeaderIndices={[10]}
+        initialNumToRender={14}
+        maxToRenderPerBatch={14}
+        windowSize={10}
+        onEndReachedThreshold={100}
+        onEndReached={handleLoadMore}
+        ref={page}
+        inverted
+      />
+      <View
+        style={{
+          marginBottom: 60
+        }}
+      ></View>
+
       <View
         style={{
           justifyContent: 'space-between',
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: '#efefef',
-          width: '92%',
+          width: '94%',
           bottom: 15,
           margin: 15,
           position: 'absolute',
@@ -304,6 +341,12 @@ const styles = StyleSheet.create({
   },
   body: {
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 10,
+    marginBottom: 100
+  },
+  loader: {
+    marginTop: 100,
+    marginBottom: 20,
+    alignItems: 'center'
   }
 });

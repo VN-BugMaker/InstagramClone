@@ -18,6 +18,7 @@ const FriendProfile = ({ route, navigation }) => {
     data,
     itemFollow
   } = route.params;
+  console.log(data);
   return (
     <View style={styles.container}>
       <View style={styles.header}>

@@ -15,6 +15,7 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { CommonActions } from '@react-navigation/native';
 import LoadPost from '../screenComponents/loadAnimated/LoadPost';
+import { URL } from '../screenComponents/api/Url';
 
 const AddPost = ({ navigation }) => {
   const [images, setImages] = useState([]);
@@ -58,7 +59,7 @@ const AddPost = ({ navigation }) => {
 
     await axios
       .post(
-        'http://192.168.0.38:5000/api/posts',
+        `${URL}/api/posts`,
         {
           images: image,
           content: content,

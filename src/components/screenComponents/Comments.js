@@ -13,6 +13,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { ScrollView } from 'react-native-virtualized-view';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { URL } from './api/Url';
 
 const Comments = ({ route, navigation }) => {
   const [like, setLike] = useState(like);
@@ -23,7 +24,7 @@ const Comments = ({ route, navigation }) => {
   const [reply, setReply] = useState('');
   const [data, setData] = useState();
   const { id, content, userPost, avatarUser } = route.params;
-  const { userToken, idUser } = useContext(AuthContext);
+  const { userToken, idUser, username } = useContext(AuthContext);
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -45,7 +46,7 @@ const Comments = ({ route, navigation }) => {
     setComment('');
     await axios
       .post(
-        'http://192.168.0.38:5000/api/comment',
+        `${URL}/api/comment`,
         reply
           ? { user, content, reply, postUserId, postId }
           : { user, content, postUserId, postId },
@@ -62,7 +63,7 @@ const Comments = ({ route, navigation }) => {
   useEffect(() => {
     console.log('hello');
     const loadComment = async () => {
-      await fetch(`http://192.168.0.38:5000/api/post/${id}`, {
+      await fetch(`${URL}/api/post/${id}`, {
         method: 'GET',
         headers: { Authorization: userToken }
       })
@@ -271,7 +272,7 @@ const Comments = ({ route, navigation }) => {
             multiline={true}
             value={comment}
             numberOfLines={3}
-            placeholder="Bình Luận với vai trò Name..."
+            placeholder={`Bình Luận với vai trò ${username}...`}
             onChangeText={(text) => setComment(text)}
             autoFocus
           />

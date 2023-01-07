@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { URL } from '../components/screenComponents/api/Url';
 
 export const AuthContext = createContext();
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const login = ({ email, password }) => {
     setIsLoading(true);
     axios
-      .post('http://192.168.0.38:5000/api/login', {
+      .post(`${URL}/api/login`, {
         email,
         password
       })

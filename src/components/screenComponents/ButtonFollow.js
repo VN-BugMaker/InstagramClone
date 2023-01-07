@@ -1,18 +1,18 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
+import { URL } from './api/Url';
 
 const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
   const [follow, setFollow] = useState(false);
   const { userToken, idUser } = useContext(AuthContext);
-
   const handleFollow = () => {
     changeFollow(
       itemFollow
         ? itemFollow?.following.find((follow) => follow._id === itemFollow._id)
           ? 'unfollow'
           : 'follow'
-        : itemUnfollow?.following.find(
+        : itemUnfollow?.followers.find(
             (follow) => follow._id === itemUnfollow._id
           )
         ? 'follow'
@@ -21,11 +21,11 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
     setFollow(!follow);
   };
 
-  const changeFollow = (follow) => {
+  const changeFollow = (change) => {
     fetch(
-      `http://192.168.0.38:5000/api/user/${
+      `${URL}/api/user/${
         itemFollow ? itemFollow._id : itemUnfollow._id
-      }/${follow}`,
+      }/${change}`,
       {
         method: 'PATCH',
         headers: { Authorization: userToken }
@@ -33,6 +33,7 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
     );
     setFollow(!follow);
   };
+  // useEffect(() => {}, []);
 
   return (
     <View>
@@ -45,7 +46,7 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
               )
               ? width
               : width
-            : itemUnfollow?.following.find(
+            : itemUnfollow?.followers.find(
                 (follow) => follow._id === itemUnfollow._id
               )
             ? width
@@ -60,7 +61,7 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
                 )
                 ? '#efefef'
                 : '#0095f6'
-              : itemUnfollow?.following.find(
+              : itemUnfollow?.followers.find(
                   (follow) => follow._id === itemUnfollow._id
                 )
               ? '#0095f6'
@@ -80,7 +81,7 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
                   )
                   ? '#000000'
                   : '#ffffff'
-                : itemUnfollow?.following.find(
+                : itemUnfollow?.followers.find(
                     (follow) => follow._id === itemUnfollow._id
                   )
                 ? '#ffffff'
@@ -95,7 +96,7 @@ const ButtonFollow = ({ width, itemFollow, itemUnfollow }) => {
                 )
                 ? 'Đang theo dõi'
                 : 'Theo dõi'
-              : itemUnfollow?.following.find(
+              : itemUnfollow?.followers.find(
                   (follow) => follow._id === itemUnfollow._id
                 )
               ? 'Theo dõi'

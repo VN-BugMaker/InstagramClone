@@ -19,15 +19,16 @@ import {
 import BottomTabProfile from '../screenComponents/BottomTabProfile';
 import { AuthContext } from '../../context/AuthContext';
 import { ScrollView } from 'react-native-virtualized-view';
+import { URL } from '../screenComponents/api/Url';
 
-const Profile = ({ idU = 2 }) => {
+const Profile = () => {
   const { logout } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const { userToken, idUser } = useContext(AuthContext);
-  const URL = 'http://192.168.0.38:5000/api/user';
   const bottomSheetRef = useRef(null);
   const snapPoints = ['50%'];
   const [refreshing, setRefreshing] = useState(false);
+
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
@@ -40,7 +41,7 @@ const Profile = ({ idU = 2 }) => {
   };
 
   const getProFile = async () => {
-    await fetch(`http://192.168.0.38:5000/api/user/${idUser}`, {
+    await fetch(`${URL}/api/user/${idUser}`, {
       method: 'GET',
       headers: { Authorization: userToken }
     })
@@ -52,7 +53,7 @@ const Profile = ({ idU = 2 }) => {
 
   useEffect(() => {
     getProFile();
-  }, []);
+  }, [refreshing]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -60,7 +61,7 @@ const Profile = ({ idU = 2 }) => {
         <BottomSheetModalProvider>
           {data._id === idUser ? (
             <View>
-              {/* <ScrollView
+              <ScrollView
                 style={{ backgroundColor: 'red ' }}
                 scrollEnabled={false}
                 nestedScrollEnabled={true}
@@ -70,48 +71,49 @@ const Profile = ({ idU = 2 }) => {
                 // onRefresh={
                 // <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 // }
-              > */}
-              <View>
-                <View style={styles.header}>
-                  <View style={styles.headerLeft}>
-                    <Text style={styles.nameProfile}>{data.username}</Text>
-                    <Feather
-                      name="chevron-down"
-                      style={styles.chevronDownIcon}
-                    />
+              >
+                <View>
+                  <View style={styles.header}>
+                    <View style={styles.headerLeft}>
+                      <Text style={styles.nameProfile}>{data.username}</Text>
+                      <Feather
+                        name="chevron-down"
+                        style={styles.chevronDownIcon}
+                      />
+                    </View>
+                    <View style={styles.headerRight}>
+                      <Feather name="plus" style={styles.plusIcon} />
+                      <Feather
+                        onPress={handleSheetChanges}
+                        name="menu"
+                        style={styles.menuIcon}
+                      />
+                    </View>
                   </View>
-                  <View style={styles.headerRight}>
-                    <Feather name="plus" style={styles.plusIcon} />
-                    <Feather
-                      onPress={handleSheetChanges}
-                      name="menu"
-                      style={styles.menuIcon}
+
+                  <View>
+                    <ProfileBody
+                      name={data.username}
+                      imageProfile={data.avatar}
+                      post={data.followers.length}
+                      follower={data.followers.length}
+                      following={data.following.length}
+                      accountName={data.fullname}
+                      data={data}
                     />
+                    {console.log(data.following.length)}
                   </View>
                 </View>
-
                 <View>
-                  <ProfileBody
+                  <MoreFollow
+                    id={idUser}
                     name={data.username}
                     imageProfile={data.avatar}
-                    post={data.followers.length}
-                    follower={data.followers.length}
-                    following={data.following.length}
                     accountName={data.fullname}
-                    data={data}
+                    itemFollow={data}
                   />
                 </View>
-              </View>
-              <View>
-                <MoreFollow
-                  id={idUser}
-                  name={data.username}
-                  imageProfile={data.avatar}
-                  accountName={data.fullname}
-                  itemFollow={data}
-                />
-              </View>
-              {/* </ScrollView> */}
+              </ScrollView>
             </View>
           ) : null}
           <BottomTabProfile id={idUser} />

@@ -141,10 +141,10 @@ export const Heart_SVG = (props) => (
 export const Heart_SVG_Cli = (props) => (
   <Svg
     width={
-      props.like === 'like' ? 24 : 21 || props.like === 'likeComment' ? 17 : 21
+      props.like === 'like' ? 24 : 24 || props.like === 'likeComment' ? 17 : 21
     }
     height={
-      props.like === 'like' ? 21 : 19 || props.like === 'likeComment' ? 14 : 19
+      props.like === 'like' ? 21 : 21 || props.like === 'likeComment' ? 14 : 19
     }
     viewBox="0 0 21 19"
     fill="none"
@@ -222,7 +222,7 @@ export const Comment_SVG = (props) => (
 export const Options_SVG = (props) => (
   <Svg
     width={14}
-    height={4}
+    height={18}
     viewBox="0 0 14 4"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

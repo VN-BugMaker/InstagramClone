@@ -13,133 +13,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import ButtonFollow from '../screenComponents/ButtonFollow';
 import { AuthContext } from '../../context/AuthContext';
 import Dot from 'react-native-vector-icons/Entypo';
-
 const Tab = createMaterialTopTabNavigator();
-// Follower
-
-const renderFollower = ({ item }, idUser) => {
-  return (
-    <View style={styles.containerFollowing}>
-      <View style={styles.left}>
-        <View>
-          <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        </View>
-        <View style={{ paddingLeft: 15 }}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={{ fontWeight: '600' }}>{item.username}</Text>
-            {!item?.followers.find((follow) => follow === idUser) && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingHorizontal: 5
-                }}
-              >
-                <Dot name="dot-single" style={{ fontSize: 16 }} />
-                <TouchableOpacity>
-                  <Text
-                    style={{
-                      color: '#26a5f7',
-                      fontWeight: '600'
-                    }}
-                  >
-                    Theo dõi
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-          <Text style={styles.fullname}>{item.fullname}</Text>
-        </View>
-      </View>
-      <View style={styles.right}>
-        <TouchableOpacity onPress={() => console.log(item._id)}>
-          <View
-            style={{
-              backgroundColor: '#efefef',
-              width: 55,
-              height: 33,
-              borderRadius: 9,
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <Text
-              style={{
-                color: '#000000',
-                fontWeight: '600',
-                fontSize: 15
-              }}
-            >
-              Xóa
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
-const Followers = ({ data, idUser, refreshing, onRefresh }) => {
-  return (
-    <View style={styles.containerFollow}>
-      <Text
-        style={{
-          paddingBottom: 12,
-          paddingLeft: 15,
-          fontWeight: '600',
-          fontSize: 16
-        }}
-      >
-        Tất cả người theo dõi
-      </Text>
-      <FlatList
-        data={data?.followers.map((item) => item)}
-        renderItem={(item) => renderFollower(item, idUser)}
-        keyExtractor={(item) => item._id}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-      />
-    </View>
-  );
-};
-
-// Following
-
-const renderFollowing = ({ item }) => {
-  return (
-    <View style={styles.containerFollowing}>
-      <View style={styles.left}>
-        <View>
-          <Image source={{ uri: item.avatar }} style={styles.avatar} />
-        </View>
-        <View style={{ paddingLeft: 15 }}>
-          <Text style={styles.username}>{item.username}</Text>
-          <Text style={styles.fullname}>{item.fullname}</Text>
-        </View>
-      </View>
-      <View style={styles.right}>
-        <View style={{ paddingRight: 10 }}>
-          <ButtonFollow width={136} itemUnfollow={item} />
-        </View>
-
-        <Feather name="more-vertical" style={styles.moreVertical} />
-      </View>
-    </View>
-  );
-};
-const Followings = ({ data, idUser, refreshing, onRefresh }) => {
-  return (
-    <View style={styles.containerFollow}>
-      <FlatList
-        data={data?.following.map((item) => item)}
-        renderItem={(item) => renderFollowing(item, idUser)}
-        keyExtractor={(item) => item._id}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-      />
-    </View>
-  );
-};
 
 const FollowScreen = ({ route, navigation }) => {
   const { tab, follower, following, data } = route.params;
@@ -150,6 +24,144 @@ const FollowScreen = ({ route, navigation }) => {
     setTimeout(() => {
       setRefreshing(false);
     }, 100);
+  };
+  // Follower
+  const renderFollower = ({ item }, idUser) => {
+    return (
+      <View style={styles.containerFollowing}>
+        <View style={styles.left}>
+          <View>
+            <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          </View>
+          <View style={{ paddingLeft: 15 }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ fontWeight: '600' }}>{item.username}</Text>
+              {!item?.followers.find((follow) => follow === idUser) && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: 5
+                  }}
+                >
+                  <Dot name="dot-single" style={{ fontSize: 16 }} />
+                  <TouchableOpacity>
+                    <Text
+                      style={{
+                        color: '#26a5f7',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Theo dõi
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+            <Text style={styles.fullname}>{item.fullname}</Text>
+          </View>
+        </View>
+        <View style={styles.right}>
+          <TouchableOpacity onPress={() => console.log(item._id)}>
+            <View
+              style={{
+                backgroundColor: '#efefef',
+                width: 55,
+                height: 33,
+                borderRadius: 9,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Text
+                style={{
+                  color: '#000000',
+                  fontWeight: '600',
+                  fontSize: 15
+                }}
+              >
+                Xóa
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  const Followers = ({ data, idUser, refreshing, onRefresh }) => {
+    return (
+      <View style={styles.containerFollow}>
+        <Text
+          style={{
+            paddingBottom: 12,
+            paddingLeft: 15,
+            fontWeight: '600',
+            fontSize: 16
+          }}
+        >
+          Tất cả người theo dõi
+        </Text>
+        <FlatList
+          data={data?.followers.map((item) => item)}
+          renderItem={(item) => renderFollower(item, idUser)}
+          keyExtractor={(item) => item._id}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      </View>
+    );
+  };
+
+  // Following
+
+  const renderFollowing = ({ item }) => {
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          navigation.push('FriendProfile', {
+            id: item._id,
+            name: item.username,
+            image: item.avatar,
+            follower: item?.followers.length,
+            following: item?.following.length,
+            post: item.followers.length,
+            accountName: item.fullname,
+            data: data
+          })
+        }
+        style={styles.containerFollowing}
+      >
+        <View style={styles.left}>
+          <View>
+            <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          </View>
+          <View style={{ paddingLeft: 15 }}>
+            <Text style={styles.username}>{item.username}</Text>
+            <Text style={styles.fullname}>{item.fullname}</Text>
+          </View>
+        </View>
+        <View style={styles.right}>
+          <View style={{ paddingRight: 10 }}>
+            <ButtonFollow width={136} itemUnfollow={item} itemFollow={null} />
+          </View>
+
+          <Feather name="more-vertical" style={styles.moreVertical} />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const Followings = ({ data, idUser, refreshing, onRefresh }) => {
+    return (
+      <View style={styles.containerFollow}>
+        <FlatList
+          data={data?.following.map((item) => item)}
+          renderItem={(item) => renderFollowing(item, idUser)}
+          keyExtractor={(item) => item._id}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      </View>
+    );
   };
 
   return (

@@ -1,4 +1,11 @@
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator
+} from 'react-native';
 import React, {
   useState,
   useRef,
@@ -6,7 +13,6 @@ import React, {
   useEffect,
   useCallback
 } from 'react';
-import postData from '../../data/postData';
 import {
   Comment_SVG,
   Heart_SVG,
@@ -16,40 +22,59 @@ import {
   Share_SVG
 } from '../../svg-view';
 import styles from '../../../assets/styles/styles';
-import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { URL } from './api/Url';
+
 const Posts = () => {
   const navigation = useNavigation();
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [idItem, setIdItem] = useState();
-  const [isRender, setIsRender] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageCurrent, setPageCurrent] = useState(1);
   const { userToken, idUser, avatarUser } = useContext(AuthContext);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isLoadLike, setIsLoadLike] = useState(false);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 100000);
+  };
   useEffect(() => {
+    setIsLoading(true);
     const loadPosts = async () => {
-      await fetch('http://192.168.0.38:5000/api/posts', {
+      console.log(pageCurrent);
+      await fetch(`${URL}/api/posts?limit=${2 * pageCurrent}`, {
         method: 'GET',
         headers: { Authorization: userToken }
       })
         .then((res) => res.json())
         .then((res) => {
-          setData(res.posts);
+          setData([...res.posts]);
+          setIsLoading(false);
           setTimeout(() => {
             AsyncStorage.removeItem('access_token');
             AsyncStorage.removeItem('idUser');
             AsyncStorage.removeItem('avatarUser');
             AsyncStorage.removeItem('username');
-          }, 10000000);
+          }, 100000);
         });
     };
     loadPosts();
-  }, [isRender]);
+  }, [pageCurrent, refreshing, isLoadLike]);
 
-  const likePost = (idPost, like) => {
-    fetch(`http://192.168.0.38:5000/api/post/${idPost}/${like}`, {
+  const likePost = (idPost) => {
+    fetch(`${URL}/api/post/${idPost}/like`, {
+      method: 'PATCH',
+      headers: { Authorization: userToken }
+    });
+  };
+  const unlikePost = (idPost) => {
+    fetch(`${URL}/api/post/${idPost}/unlike`, {
       method: 'PATCH',
       headers: { Authorization: userToken }
     });
@@ -58,21 +83,12 @@ const Posts = () => {
     setCurrentSlideIndex(item.viewableItems[0].index);
     setIdItem(item.viewableItems[0].index);
     // const newItem = ...item.viewableItems
-    console.log(item.viewableItems[0].index);
+    // console.log(item.viewableItems[0].index);
   });
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 50
   });
-
-  const handleLike = (item) => {
-    likePost(
-      item._id,
-      item.likes.find((item) => item._id === idUser) ? 'unlike' : 'like'
-    );
-    setIsRender(!isRender);
-  };
-
   const renderImage = ({ item }) => {
     return (
       <Image
@@ -82,7 +98,14 @@ const Posts = () => {
       />
     );
   };
-
+  const handleLike = (item) => {
+    likePost(item._id);
+    setIsLoadLike(!isLoadLike);
+  };
+  const handleUnLike = (item) => {
+    unlikePost(item._id);
+    setIsLoadLike(!isLoadLike);
+  };
   const renderPost = ({ item }) => {
     return (
       <View>
@@ -98,7 +121,12 @@ const Posts = () => {
             <Text style={styles.nameUser}>{item.user.username}</Text>
           </View>
           <View style={styles.optionPost}>
-            <Options_SVG />
+            <TouchableOpacity
+              style={{ height: 18 }}
+              onPress={() => console.log(item._id)}
+            >
+              <Options_SVG />
+            </TouchableOpacity>
           </View>
         </View>
         <View>
@@ -123,13 +151,22 @@ const Posts = () => {
 
         <View style={styles.interactPost}>
           <View style={styles.likePost}>
-            <TouchableOpacity delayPressIn={0} onPress={() => handleLike(item)}>
-              {item?.likes.find((item) => item._id === idUser) ? (
+            {item.likes.find((item) => item._id === idUser) ? (
+              <TouchableOpacity onPress={() => handleUnLike(item)}>
                 <Heart_SVG_Cli like="like" />
-              ) : (
-                <Heart_SVG />
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => handleLike(item)}>
+                <Heart_SVG handleLike />
+              </TouchableOpacity>
+            )}
+            {/* <LikeButton
+              isLike={isLike}
+              handleLike={handleLike}
+              handleUnLike={handleUnLike}
+              idUser={idUser}
+              item={item}
+            /> */}
             <TouchableOpacity
               onPress={() =>
                 navigation.push('Comments', {
@@ -146,7 +183,7 @@ const Posts = () => {
             <Share_SVG />
           </View>
           <View style={styles.pgPost}>
-            {item.images.length > 1 &&
+            {/* {item.images.length > 1 &&
               item.images.map((item, index) => {
                 return (
                   <View
@@ -162,7 +199,7 @@ const Posts = () => {
                     }}
                   ></View>
                 );
-              })}
+              })} */}
           </View>
           <View style={styles.savePost}>
             <Save_SVG />
@@ -192,16 +229,38 @@ const Posts = () => {
       </View>
     );
   };
+  const renderFooter = () => {
+    return (
+      isLoading && (
+        <View style={{ marginTop: 15, alignItems: 'center' }}>
+          <ActivityIndicator color={'#999999'} size={'large'} />
+        </View>
+      )
+    );
+  };
+  const handleLoadMore = () => {
+    if (!isLoading) {
+      setPageCurrent(pageCurrent + 1);
+      setIsLoading(true);
+    }
+  };
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={data}
-        horizontal={false}
-        renderItem={renderPost}
-        keyExtractor={(item) => item._id}
-        extraData={!isRender}
-        showsVerticalScrollIndicator={false}
+        // horizontal={false}
+        renderItem={(item) => renderPost(item)}
+        keyExtractor={(item, index) => String(index)}
+        initialNumToRender={2}
+        maxToRenderPerBatch={8}
+        windowSize={10}
+        // showsVerticalScrollIndicator={true}
         scrollEnabled={false}
+        ListFooterComponent={() => renderFooter()}
+        onEndReachedThreshold={0.01}
+        onEndReached={handleLoadMore}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );

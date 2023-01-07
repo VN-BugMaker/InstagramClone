@@ -6,7 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  ActivityIndicator
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,6 +16,7 @@ import ButtonFollow from './ButtonFollow';
 import { MorePeople, MorePeopleClick } from '../../svg-view';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
+import { URL } from './api/Url';
 
 const MoreFollow = ({
   id,
@@ -27,18 +29,20 @@ const MoreFollow = ({
   const navigation = useNavigation();
   const [data, setData] = useState([]);
   const [close, setClose] = useState(false);
-  const [moreFollow, setMoreFollow] = useState(false);
+  const [moreFollow, setMoreFollow] = useState(true);
   const { userToken, idUser } = useContext(AuthContext);
   const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getSuggest = async () => {
-    await fetch(`http://192.168.0.38:5000/api/suggestionsUser`, {
+    await fetch(`${URL}/api/suggestionsUser`, {
       method: 'GET',
       headers: { Authorization: userToken }
     })
       .then((res) => res.json())
       .then((res) => {
         setData(res.users);
+        setIsLoading(false);
       });
   };
   const onRefresh = () => {
@@ -86,7 +90,11 @@ const MoreFollow = ({
               <Text style={styles.textName}>{item.username}</Text>
               <Text style={styles.textAccountName}>{item.fullname}</Text>
               <View style={styles.buttonFollow}>
-                <ButtonFollow width={136} itemFollow={item} />
+                <ButtonFollow
+                  width={136}
+                  itemFollow={item}
+                  itemUnfollow={null}
+                />
               </View>
             </View>
           </TouchableOpacity>
@@ -101,7 +109,11 @@ const MoreFollow = ({
         <View style={styles.containerFollow}>
           {message ? (
             <>
-              <ButtonFollow width={170} itemFollow={itemFollow} />
+              <ButtonFollow
+                width={170}
+                itemFollow={itemFollow}
+                itemUnfollow={null}
+              />
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.buttonMessage}
@@ -139,7 +151,9 @@ const MoreFollow = ({
         <View>
           <Text style={styles.textSuggest}>Gợi ý cho bạn</Text>
           {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
-          {
+          {isLoading ? (
+            <ActivityIndicator color={'#999999'} size={'large'} />
+          ) : (
             <FlatList
               data={data}
               renderItem={renderSuggest}
@@ -149,7 +163,7 @@ const MoreFollow = ({
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
             />
-          }
+          )}
           {/* </ScrollView> */}
         </View>
       ) : null}

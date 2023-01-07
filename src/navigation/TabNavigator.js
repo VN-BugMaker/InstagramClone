@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   Home_SVG,
@@ -15,10 +15,11 @@ import Search from '../components/screens/Search';
 import Reels from '../components/screens/Reels';
 import Notification from '../components/screens/Notification';
 import Profile from '../components/screens/Profile';
-import users from '../data/user';
+import { AuthContext } from '../context/AuthContext';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
+  const { avatarUser } = useContext(AuthContext);
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -29,6 +30,7 @@ const TabNavigator = () => {
           height: 55,
           borderColor: '#ffffff'
         },
+        tabBarHideOnKeyboard: true,
         tabBarIcon: ({ focused }) => {
           let iconName;
           if (route.name === 'Home') {
@@ -39,7 +41,7 @@ const TabNavigator = () => {
             iconName = focused ? (
               <View>
                 <Image
-                  source={users.avatar}
+                  source={{ uri: avatarUser }}
                   style={{
                     width: 26,
                     height: 26,
@@ -52,7 +54,7 @@ const TabNavigator = () => {
             ) : (
               <View>
                 <Image
-                  source={users.avatar}
+                  source={{ uri: avatarUser }}
                   style={{ width: 26, height: 26, borderRadius: 26 }}
                 />
               </View>
@@ -61,7 +63,7 @@ const TabNavigator = () => {
             iconName = focused ? <Reel_SVG /> : <Reel_SVG />;
           } else if (route.name === 'Notification') {
             iconName = focused ? (
-              <Heart_SVG_Cli color="black" />
+              <Heart_SVG_Cli color="black" like="like" />
             ) : (
               <Heart_SVG />
             );

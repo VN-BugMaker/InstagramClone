@@ -4,19 +4,21 @@ import {
   Image,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Post, PostFocus, Reel_SVG, Tag, TagFocus } from '../../svg-view';
-import postImage from '../../data/postImage';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { ScrollView } from 'react-native-virtualized-view';
-
+import { useNavigation } from '@react-navigation/native';
+import { URL } from './api/Url';
 const Tab = createMaterialTopTabNavigator();
 
 const Posts = ({ id }) => {
+  const navigation = useNavigation();
   const { userToken, idUser } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
@@ -30,7 +32,7 @@ const Posts = ({ id }) => {
   useEffect(() => {
     setIsLoading(true);
     const loadPosts = async () => {
-      await fetch(`http://192.168.0.38:5000/api/user_posts/${id}`, {
+      await fetch(`${URL}/api/user_posts/${id}?limit=100`, {
         method: 'GET',
         headers: { Authorization: userToken }
       })
@@ -55,19 +57,30 @@ const Posts = ({ id }) => {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <View style={styles.viewImagePost}>
-            {posts.map((item) => {
-              return item.images.map((item, index) => {
-                return (
-                  <View key={index}>
-                    <Image
-                      source={{
-                        uri: item.url
-                      }}
-                      style={styles.imagePost}
-                    />
-                  </View>
-                );
-              });
+            {posts.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() =>
+                    navigation.push('PostDetail', {
+                      id: item._id
+                    })
+                  }
+                >
+                  {item.images.map((item, index) => {
+                    return (
+                      <View key={index}>
+                        <Image
+                          source={{
+                            uri: item.url
+                          }}
+                          style={styles.imagePost}
+                        />
+                      </View>
+                    );
+                  })}
+                </TouchableOpacity>
+              );
             })}
           </View>
         </ScrollView>
@@ -82,7 +95,7 @@ const Videos = () => {
   const [posts, setPosts] = useState([]);
   const getData = () => {
     axios
-      .get('http://192.168.0.38:5000/api/posts', {
+      .get(`${URL}/api/posts`, {
         headers: {
           Authorization: userToken
         }

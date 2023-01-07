@@ -4,26 +4,65 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  Modal
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import Feather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 const EditProfile = ({ route, navigation }) => {
   const { name, imageProfile, accountName } = route.params;
-  const nav = useNavigation();
+  const [names, setName] = useState(name);
+  const [imageProfiles, setImageProfile] = useState(imageProfile);
+  const [accountNames, setAccountName] = useState(accountName);
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeChange = () => {
+    setModalVisible(!modalVisible);
 
+    navigation.dispatch({
+      ...CommonActions.goBack()
+    });
+  };
+  const updateProfile = () => {
+    console.log(names + ' ' + imageProfiles + ' ' + accountNames);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Feather
-          onPress={() => navigation.goBack()}
-          name="x"
-          style={styles.xIcon}
-        />
+        {names !== name ||
+        imageProfiles !== imageProfile ||
+        accountNames !== accountName ? (
+          <Feather
+            onPress={() => setModalVisible(true)}
+            name="x"
+            style={styles.xIcon}
+          />
+        ) : (
+          <Feather
+            onPress={() => navigation.goBack()}
+            name="x"
+            style={styles.xIcon}
+          />
+        )}
         <Text style={styles.titleHeader}>Chỉnh sửa trang cá nhân</Text>
-        <Feather name="check" style={styles.checkIcon} />
+
+        {names !== name ||
+        imageProfiles !== imageProfile ||
+        accountNames !== accountName ? (
+          accountNames === '' || names === '' ? (
+            <Feather
+              name="check"
+              style={[styles.checkIcon, { opacity: 0.3 }]}
+            />
+          ) : (
+            <TouchableOpacity onPress={updateProfile}>
+              <Feather name="check" style={[styles.checkIcon]} />
+            </TouchableOpacity>
+          )
+        ) : (
+          <Feather name="check" style={[styles.checkIcon, { opacity: 0.3 }]} />
+        )}
       </View>
       <View style={styles.viewImage}>
         <Image source={{ uri: imageProfile }} style={styles.imageProfile} />
@@ -35,6 +74,7 @@ const EditProfile = ({ route, navigation }) => {
           placeholder="Tên"
           defaultValue={accountName}
           style={styles.textInput}
+          onChangeText={(text) => setAccountName(text)}
         />
       </View>
       <View style={styles.body}>
@@ -43,6 +83,7 @@ const EditProfile = ({ route, navigation }) => {
           placeholder="Tên người dùng"
           defaultValue={name}
           style={styles.textInput}
+          onChangeText={(text) => setName(text)}
         />
       </View>
       <View style={styles.body}>
@@ -68,6 +109,66 @@ const EditProfile = ({ route, navigation }) => {
           editable={false}
         />
       </TouchableOpacity>
+      <View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text
+                style={[styles.modalText, { fontWeight: '700', fontSize: 19 }]}
+              >
+                Thay đổi chưa lưu
+              </Text>
+              <Text style={[styles.modalText, { opacity: 0.6 }]}>
+                Bạn chưa lưu thay đổi. Bạn có chắc chắn muốn hủy không?
+              </Text>
+
+              <View
+                style={{
+                  borderColor: '#efefef',
+                  borderBottomWidth: 1,
+                  width: 266,
+                  borderTopWidth: 1,
+                  paddingVertical: 13,
+                  marginTop: 30
+                }}
+              >
+                <TouchableOpacity onPress={closeChange}>
+                  <Text
+                    style={[
+                      styles.textStyle,
+                      { color: '#26a5f7', fontSize: 16 }
+                    ]}
+                  >
+                    Có
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={{
+                  width: 266,
+                  paddingVertical: 13
+                }}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text
+                  style={[styles.textStyle, { color: 'black', fontSize: 16 }]}
+                >
+                  Không
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };
@@ -138,6 +239,49 @@ const styles = StyleSheet.create({
   },
   bodySetting: {
     marginVertical: 20
+  },
+  centeredView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: '100%'
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingTop: 35,
+    paddingHorizontal: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    maxWidth: '63%'
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF'
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3'
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center'
   }
 });
 

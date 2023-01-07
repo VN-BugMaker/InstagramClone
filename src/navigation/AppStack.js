@@ -15,6 +15,7 @@ import FollowScreen from '../components/screens/FollowScreen';
 import Comments from '../components/screenComponents/Comments';
 import Message from '../components/screens/Message';
 import MessageDetail from '../components/screenComponents/MessageDetail';
+import PostDetail from '../components/screenComponents/PostDetail';
 
 const AppStack = () => {
   const Stack = createStackNavigator();
@@ -74,6 +75,13 @@ const AppStack = () => {
       <Stack.Screen
         name="MessageDetail"
         component={MessageDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="PostDetail"
+        component={PostDetail}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
         }}
