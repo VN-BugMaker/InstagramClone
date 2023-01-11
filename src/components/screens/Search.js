@@ -17,11 +17,13 @@ import { Search_SVG_Cli } from '../../svg-view';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../../context/AuthContext';
 import { URL } from '../screenComponents/api/Url';
+import SearchContent from '../screenComponents/SearchContent';
 const Search = () => {
   const { username, userToken, idUser } = useContext(AuthContext);
   const [searchBarFocused, setSearchBarFocused] = useState(false);
   const searchInput = useRef(new Animated.Value(390)).current;
-  const [conversation, setConversation] = useState([]);
+  const [itemSearch, setItemSearch] = useState([]);
+  const [search, setSearch] = useState('');
 
   const focusSearch = () => {
     Animated.timing(searchInput, {
@@ -32,6 +34,7 @@ const Search = () => {
     setSearchBarFocused(true);
   };
   const unFocusSearch = () => {
+    // setSearch();
     Animated.timing(searchInput, {
       toValue: 390,
       duration: 100,
@@ -40,24 +43,31 @@ const Search = () => {
     setSearchBarFocused(false);
   };
   const getConversations = async () => {
-    await fetch(`${URL}/api/conversations`, {
-      method: 'GET',
-      headers: { Authorization: userToken }
-    })
+    await fetch(
+      `${URL}/api/search?username=${
+        search.replace(/\s/g, '') ? search.toLowerCase() : null
+      }`,
+      {
+        method: 'GET',
+        headers: { Authorization: userToken }
+      }
+    )
       .then((res) => res.json())
       .then((res) => {
-        setConversation(
-          res.conversations.map((item) => {
+        setItemSearch(
+          res.users.map((item) => {
             return item;
           })
         );
       });
   };
   useEffect(() => {
-    getConversations();
-  }, []);
+    setTimeout(() => {
+      getConversations();
+    }, 100);
+  }, [search]);
 
-  const renderChat = ({ item }) => {
+  const renderSearch = ({ item }) => {
     return (
       <TouchableOpacity
         // onPress={() =>
@@ -77,29 +87,13 @@ const Search = () => {
       >
         <View style={styles.left}>
           <View>
-            {item.recipients.map((item, index) => {
-              return (
-                item._id !== idUser && (
-                  <Image
-                    key={index}
-                    source={{ uri: item.avatar }}
-                    style={styles.avatar}
-                  />
-                )
-              );
-            })}
+            <Image source={{ uri: item.avatar }} style={styles.avatar} />
           </View>
           <View style={{ paddingLeft: 15 }}>
             <View style={{ flexDirection: 'row' }}>
-              {item.recipients.map((item, index) => {
-                return (
-                  item._id !== idUser && (
-                    <Text key={index} style={{ fontWeight: '600' }}>
-                      {item.username}
-                    </Text>
-                  )
-                );
-              })}
+              <Text style={{ fontWeight: '600', fontSize: 14 }}>
+                {item.username}
+              </Text>
             </View>
             <View
               style={{
@@ -108,23 +102,9 @@ const Search = () => {
                 opacity: 1 ? 1 : 0.4
               }}
             >
-              <Text
-                style={{
-                  fontWeight: 'bold'
-                }}
-              >
-                {item.text}
+              <Text style={{ opacity: 0.4, fontSize: 13 }}>
+                {item.fullname}
               </Text>
-
-              {item.recipients.map((item, index) => {
-                return (
-                  item._id !== idUser && (
-                    <Text key={index} style={{ fontWeight: 'bold' }}>
-                      {item.username}
-                    </Text>
-                  )
-                );
-              })}
             </View>
           </View>
         </View>
@@ -155,14 +135,15 @@ const Search = () => {
           placeholder="Tìm kiếm"
           placeholderTextColor={'#909090'}
           style={styles.searchText}
+          onChangeText={(text) => setSearch(text)}
         />
       </Animated.View>
 
       {searchBarFocused ? (
         <View style={styles.containerMessage}>
           <FlatList
-            data={conversation}
-            renderItem={(item) => renderChat(item)}
+            data={itemSearch}
+            renderItem={(item) => renderSearch(item)}
             keyExtractor={(item, index) => String(index)}
           />
         </View>
@@ -173,7 +154,9 @@ const Search = () => {
             width: '100%',
             height: '100%'
           }}
-        ></View>
+        >
+          <SearchContent />
+        </View>
       )}
     </View>
   );

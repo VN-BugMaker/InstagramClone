@@ -13,16 +13,33 @@ import Dot from 'react-native-vector-icons/Entypo';
 import Ionic from 'react-native-vector-icons/Ionicons';
 import { VideoSvg } from '../../svg-view';
 import { AuthContext } from '../../context/AuthContext';
-import { ScrollView } from 'react-native-virtualized-view';
 import { URL } from './api/Url';
+import axios from 'axios';
 const MessageDetail = ({ route, navigation }) => {
-  const { userToken } = useContext(AuthContext);
+  const { userToken, idUser } = useContext(AuthContext);
   const { username, avatar, _id, fullname } = route.params;
   const [reload, setReload] = useState(false);
   const [message, setMessage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [pageCurrent, setPageCurrent] = useState(1);
   const page = useRef();
+  const [textContent, setTextContent] = useState('');
+
+  const sendMessage = async (text, sender, recipient) => {
+    setTextContent('');
+    console.log(text, sender, recipient);
+    await axios.post(
+      `${URL}/api/message`,
+      {
+        text,
+        sender,
+        recipient
+      },
+      {
+        headers: { Authorization: userToken }
+      }
+    );
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -294,13 +311,16 @@ const MessageDetail = ({ route, navigation }) => {
           style={{ width: '88%', left: 15 }}
           blurOnSubmit={true}
           multiline={true}
-          value={''}
+          value={textContent}
           numberOfLines={3}
           placeholder="Nhắn tin..."
-          //   onChangeText={(text) => setComment(text)}
+          onChangeText={(text) => setTextContent(text)}
           //   autoFocus
         />
-        <TouchableOpacity style={{ right: 15 }}>
+        <TouchableOpacity
+          style={{ right: 15 }}
+          onPress={() => sendMessage(textContent, idUser, _id)}
+        >
           <Text>Gửi</Text>
         </TouchableOpacity>
       </View>

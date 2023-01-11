@@ -47,7 +47,7 @@ const Posts = () => {
   useEffect(() => {
     setIsLoading(true);
     const loadPosts = async () => {
-      console.log(pageCurrent);
+      // console.log(pageCurrent);
       await fetch(`${URL}/api/posts?limit=${2 * pageCurrent}`, {
         method: 'GET',
         headers: { Authorization: userToken }

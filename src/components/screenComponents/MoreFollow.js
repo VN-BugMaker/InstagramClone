@@ -24,7 +24,8 @@ const MoreFollow = ({
   name,
   imageProfile,
   accountName,
-  itemFollow
+  itemFollow,
+  buttonFollow
 }) => {
   const navigation = useNavigation();
   const [data, setData] = useState([]);
@@ -72,7 +73,8 @@ const MoreFollow = ({
                 post: item.followers.length,
                 accountName: item.fullname,
                 itemFollow: item,
-                data: item
+                data: item,
+                isFollow: false
               })
             }
           >
@@ -94,6 +96,7 @@ const MoreFollow = ({
                   width={136}
                   itemFollow={item}
                   itemUnfollow={null}
+                  isFollow={false}
                 />
               </View>
             </View>
@@ -113,6 +116,7 @@ const MoreFollow = ({
                 width={170}
                 itemFollow={itemFollow}
                 itemUnfollow={null}
+                isFollow={buttonFollow}
               />
               <TouchableOpacity
                 activeOpacity={0.7}
@@ -134,7 +138,9 @@ const MoreFollow = ({
                   })
                 }
               >
-                <Text>Chỉnh sửa trang cá nhân</Text>
+                <Text style={{ fontWeight: 'bold' }}>
+                  Chỉnh sửa trang cá nhân
+                </Text>
               </TouchableOpacity>
             </>
           )}

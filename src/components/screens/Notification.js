@@ -1,41 +1,89 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  FlatList
+} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native-virtualized-view';
-import { followData } from '../../data/followData';
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
+import { URL } from '../screenComponents/api/Url';
 
-const Notification = ({ id = 2 }) => {
+const Notification = () => {
   const navigation = useNavigation();
+  const [data, setData] = useState([]);
+  const { userToken, idUser, avatarUser } = useContext(AuthContext);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(`${URL}/api/notifies`, {
+        method: 'GET',
+        headers: { Authorization: userToken }
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(
+            res.notifies.map((item) => {
+              return item;
+            })
+          );
+        });
+    };
+    loadPosts();
+  }, []);
+  const renderNotification = ({ item }) => {
+    return (
+      <View style={styles.itemMonth}>
+        <View style={styles.item}>
+          <TouchableOpacity style={styles.pressItem}>
+            <Image
+              source={{ uri: item.user.avatar }}
+              style={styles.imageItem}
+            />
+            <Text style={styles.textItem}>
+              <Text style={styles.nameItem}>{item.user.username}</Text>{' '}
+              {item.text}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.notification}>Thông báo</Text>
       <ScrollView style={styles.scrollWeek}>
-        <Text style={styles.thisWeek}>Tuần này</Text>
-        <View style={styles.listFollow}>
-          {followData.map((data, index) => {
-            return data.id === id ? null : (
+        {/* <Text style={styles.thisWeek}>Tuần này</Text> */}
+        {/* <View style={styles.listFollow}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.push('FriendProfile', {
-                    id: data.id,
-                    name: data.name,
-                    image: data.profileImage,
-                    follower: data.followers,
-                    following: data.following,
-                    post: data.posts,
-                    accountName: data.accountName
-                  })
-                }
-                key={index}
+                // onPress={() =>
+                  // navigation.push('FriendProfile', {
+                  //   id: data.id,
+                  //   name: data.name,
+                  //   image: data.profileImage,
+                  //   follower: data.followers,
+                  //   following: data.following,
+                  //   post: data.posts,
+                  //   accountName: data.accountName
+                  // })
+                // }
+                // key={index}
               >
-                <Text>{data.name}, </Text>
+                <Text>{}, </Text>
               </TouchableOpacity>
-            );
-          })}
+            
+            
           <Text>đã theo dõi bạn</Text>
-        </View>
-        <Text style={styles.thisMonth}>Tháng này</Text>
-        {followData.map((data, index) => {
+        </View> */}
+        <Text style={styles.thisMonth}>Tất cả thông báo</Text>
+        <FlatList
+          renderItem={(item) => renderNotification(item)}
+          data={data}
+          keyExtractor={(item, index) => String(index)}
+        />
+        {/* {followData.map((data, index) => {
           const [follow, setFollow] = useState(data.follow);
           return (
             <View key={index} style={styles.itemMonth}>
@@ -50,32 +98,11 @@ const Notification = ({ id = 2 }) => {
                 <TouchableOpacity
                   onPress={() => setFollow(!follow)}
                   style={{ width: follow ? 100 : 80 }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: follow ? '#efefef' : '#0095f6',
-                      width: '100%',
-                      height: 32,
-                      borderRadius: 6,
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: follow ? '#000000' : '#ffffff',
-                        fontWeight: 'bold',
-                        fontSize: 14
-                      }}
-                    >
-                      {follow ? 'Đang theo dõi' : 'Theo dõi'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                ></TouchableOpacity>
               </View>
             </View>
           );
-        })}
+        })} */}
       </ScrollView>
     </View>
   );

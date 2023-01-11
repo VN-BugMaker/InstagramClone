@@ -101,7 +101,7 @@ const Profile = () => {
                       accountName={data.fullname}
                       data={data}
                     />
-                    {console.log(data.following.length)}
+                    {/* {console.log(data.following.length)} */}
                   </View>
                 </View>
                 <View>

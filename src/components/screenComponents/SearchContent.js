@@ -6,9 +6,26 @@ import {
   Dimensions,
   StyleSheet
 } from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import searchData from '../../data/searchData';
+import { AuthContext } from '../../context/AuthContext';
+import { URL } from './api/Url';
 const SearchContent = () => {
+  const [data, setData] = useState([]);
+  const { userToken, idUser, avatarUser } = useContext(AuthContext);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(`${URL}/api/post_discover?limit=200`, {
+        method: 'GET',
+        headers: { Authorization: userToken }
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          // console.log(res);
+        });
+    };
+    loadPosts();
+  }, []);
   return (
     <View>
       {searchData.map((data) => {
@@ -33,7 +50,7 @@ const SearchContent = () => {
                 })}
               </View>
             )}
-            {data.id === 1 ? (
+            {/* {data.id === 1 ? (
               <View
                 style={{
                   flexDirection: 'row',
@@ -72,7 +89,7 @@ const SearchContent = () => {
                   />
                 </TouchableOpacity>
               </View>
-            ) : null}
+            ) : null} */}
           </View>
         );
       })}

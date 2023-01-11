@@ -126,7 +126,8 @@ const FollowScreen = ({ route, navigation }) => {
             following: item?.following.length,
             post: item.followers.length,
             accountName: item.fullname,
-            data: data
+            data: data,
+            isFollow: true
           })
         }
         style={styles.containerFollowing}
@@ -142,7 +143,12 @@ const FollowScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.right}>
           <View style={{ paddingRight: 10 }}>
-            <ButtonFollow width={136} itemUnfollow={item} itemFollow={null} />
+            <ButtonFollow
+              width={136}
+              itemUnfollow={item}
+              itemFollow={null}
+              isFollow={true}
+            />
           </View>
 
           <Feather name="more-vertical" style={styles.moreVertical} />

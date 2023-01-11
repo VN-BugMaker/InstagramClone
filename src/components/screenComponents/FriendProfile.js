@@ -16,7 +16,8 @@ const FriendProfile = ({ route, navigation }) => {
     post,
     accountName,
     data,
-    itemFollow
+    itemFollow,
+    isFollow
   } = route.params;
   console.log(data);
   return (
@@ -41,7 +42,13 @@ const FriendProfile = ({ route, navigation }) => {
         accountName={accountName}
         data={data}
       />
-      <MoreFollow message={id} id={id} itemFollow={itemFollow} />
+      <MoreFollow
+        message={id}
+        id={id}
+        itemFollow={itemFollow}
+        itemUnfollow={null}
+        buttonFollow={isFollow}
+      />
       <BottomTabProfile id={id} />
     </View>
   );
