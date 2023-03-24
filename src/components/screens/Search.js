@@ -155,7 +155,7 @@ const Search = () => {
             height: '100%'
           }}
         >
-          <SearchContent />
+          {/* <SearchContent /> */}
         </View>
       )}
     </View>

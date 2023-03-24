@@ -35,7 +35,7 @@ const Home = ({ navigation }) => {
         animated={true}
       />
       <View style={styles.headerWrap}>
-        <Text style={styles.titleWrapper}>Instagram</Text>
+        <Text style={styles.titleWrapper}>nokoSocial</Text>
         <View style={styles.titleWrapperRight}>
           <TouchableOpacity onPress={() => navigation.navigate('AddPost')}>
             <NewPost_SVG />
@@ -57,7 +57,7 @@ const Home = ({ navigation }) => {
         // }
       >
         <View style={[styles.storyWrapper, { flex: 1 }]}>
-          <Stories />
+          {/* <Stories /> */}
         </View>
         <Posts />
       </ScrollView>

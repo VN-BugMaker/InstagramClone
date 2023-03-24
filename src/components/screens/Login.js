@@ -24,7 +24,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Instagram</Text>
+      <Text style={styles.logo}>nokoSocial</Text>
       <TextInput
         style={styles.txtInput}
         onChangeText={(email) => setEmail(email)}
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 17
   },
   logo: {
-    fontFamily: 'Lobster-Regular',
+    // fontFamily: 'Lobster-Regular',
     fontSize: 49,
     fontWeight: '500'
   }

@@ -15,7 +15,17 @@ import { URL } from '../screenComponents/api/Url';
 const Notification = () => {
   const navigation = useNavigation();
   const [data, setData] = useState([]);
-  const { userToken, idUser, avatarUser } = useContext(AuthContext);
+  const { userToken, idUser, avatarUser, username } = useContext(AuthContext);
+  // console.log(data);
+
+  //   socket.emit('createNotify', {
+  //     ...res.data.notify,
+  //     user: {
+  //         username: username,
+  //         avatar: avatarUser
+  //     }
+  // })
+
   useEffect(() => {
     const loadPosts = async () => {
       await fetch(`${URL}/api/notifies`, {
@@ -55,54 +65,12 @@ const Notification = () => {
     <View style={styles.container}>
       <Text style={styles.notification}>Thông báo</Text>
       <ScrollView style={styles.scrollWeek}>
-        {/* <Text style={styles.thisWeek}>Tuần này</Text> */}
-        {/* <View style={styles.listFollow}>
-              <TouchableOpacity
-                // onPress={() =>
-                  // navigation.push('FriendProfile', {
-                  //   id: data.id,
-                  //   name: data.name,
-                  //   image: data.profileImage,
-                  //   follower: data.followers,
-                  //   following: data.following,
-                  //   post: data.posts,
-                  //   accountName: data.accountName
-                  // })
-                // }
-                // key={index}
-              >
-                <Text>{}, </Text>
-              </TouchableOpacity>
-            
-            
-          <Text>đã theo dõi bạn</Text>
-        </View> */}
         <Text style={styles.thisMonth}>Tất cả thông báo</Text>
         <FlatList
           renderItem={(item) => renderNotification(item)}
           data={data}
           keyExtractor={(item, index) => String(index)}
         />
-        {/* {followData.map((data, index) => {
-          const [follow, setFollow] = useState(data.follow);
-          return (
-            <View key={index} style={styles.itemMonth}>
-              <View style={styles.item}>
-                <TouchableOpacity style={styles.pressItem}>
-                  <Image source={data.profileImage} style={styles.imageItem} />
-                  <Text style={styles.textItem}>
-                    <Text style={styles.nameItem}>{data.name}</Text> đang dùng
-                    Instagram
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setFollow(!follow)}
-                  style={{ width: follow ? 100 : 80 }}
-                ></TouchableOpacity>
-              </View>
-            </View>
-          );
-        })} */}
       </ScrollView>
     </View>
   );

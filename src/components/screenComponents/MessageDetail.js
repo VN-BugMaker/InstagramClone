@@ -15,6 +15,7 @@ import { VideoSvg } from '../../svg-view';
 import { AuthContext } from '../../context/AuthContext';
 import { URL } from './api/Url';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 const MessageDetail = ({ route, navigation }) => {
   const { userToken, idUser } = useContext(AuthContext);
   const { username, avatar, _id, fullname } = route.params;
@@ -23,28 +24,47 @@ const MessageDetail = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [pageCurrent, setPageCurrent] = useState(1);
   const page = useRef();
-  const [textContent, setTextContent] = useState('');
+  const [textContent, setTextContent] = useState(null);
 
+  const socket = io(URL);
+  useEffect(() => {
+    socket.on('addMessageToClient', (msg) => {
+      console.log(msg);
+    });
+
+    return () => socket.off('addMessageToClient');
+  }, [socket]);
   const sendMessage = async (text, sender, recipient) => {
     setTextContent('');
-    console.log(text, sender, recipient);
+
+    // console.log(text, sender, recipient);
+    await socket.emit('addMessage', {
+      sender,
+      text,
+      recipient,
+      user: { _id, avatar, fullname, username },
+      createdAt: new Date().toISOString()
+    });
+
     await axios.post(
       `${URL}/api/message`,
       {
         text,
         sender,
-        recipient
+        recipient,
+        createdAt: new Date().toISOString()
       },
       {
         headers: { Authorization: userToken }
       }
     );
+    setReload(true);
   };
 
   useEffect(() => {
     setIsLoading(true);
     getDetailMessage();
-  }, [pageCurrent]);
+  }, [pageCurrent, textContent, reload]);
   const getDetailMessage = async () => {
     await fetch(`${URL}/api/message/${_id}?limit=${14 * pageCurrent}`, {
       method: 'GET',
