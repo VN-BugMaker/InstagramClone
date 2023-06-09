@@ -1,9 +1,9 @@
 import react, { useContext } from 'react';
+import URL from './Url';
 import { AuthContext } from '../../../context/AuthContext';
 const { userToken, idUser } = useContext(AuthContext);
-const URL = 'http://192.168.0.38:5000/api/user';
 export const getProFile = async () => {
-  await fetch(`${URL}/${idUser}`, {
+  await fetch(`${URL}/api/user/${idUser}`, {
     method: 'GET',
     headers: { Authorization: userToken }
   })

@@ -34,15 +34,40 @@ const Posts = () => {
   const [idItem, setIdItem] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [pageCurrent, setPageCurrent] = useState(1);
-  const { userToken, idUser, avatarUser } = useContext(AuthContext);
+  const { userToken, idUser, avatarUser, socket } = useContext(AuthContext);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoadLike, setIsLoadLike] = useState(false);
+  useEffect(() => {
+    socket.on('likeToClient', (newPost) => {
+      fetch(`${URL}/api/post/${newPost._id}/like`, {
+        method: 'PATCH',
+        headers: { Authorization: userToken }
+      });
+      socket.emit('likePost', newPost);
+      console.log(newPost._id);
+      setIsLoadLike(!isLoadLike);
+    });
 
+    return () => socket.off('likeToClient');
+  }, [socket]);
+  useEffect(() => {
+    socket.on('unLikeToClient', (newPost) => {
+      fetch(`${URL}/api/post/${newPost._id}/unlike`, {
+        method: 'PATCH',
+        headers: { Authorization: userToken }
+      });
+      socket.emit('unLikePost', newPost);
+      console.log(newPost._id);
+      setIsLoadLike(!isLoadLike);
+    });
+
+    return () => socket.off('unLikeToClient');
+  }, [socket]);
   const onRefresh = () => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 100000);
+    }, 1000000);
   };
   useEffect(() => {
     setIsLoading(true);
@@ -61,24 +86,28 @@ const Posts = () => {
             AsyncStorage.removeItem('idUser');
             AsyncStorage.removeItem('avatarUser');
             AsyncStorage.removeItem('username');
-          }, 100000);
+          }, 1000000);
         });
     };
     loadPosts();
   }, [pageCurrent, refreshing, isLoadLike]);
 
-  const likePost = (idPost) => {
+  const likePost = (idPost, data) => {
     fetch(`${URL}/api/post/${idPost}/like`, {
       method: 'PATCH',
       headers: { Authorization: userToken }
     });
+    socket.emit('likePost', data);
   };
-  const unlikePost = (idPost) => {
+
+  const unlikePost = (idPost, data) => {
     fetch(`${URL}/api/post/${idPost}/unlike`, {
       method: 'PATCH',
       headers: { Authorization: userToken }
     });
+    socket.emit('unLikePost', data);
   };
+
   const onViewableItemsChanged = useRef((item) => {
     setCurrentSlideIndex(item.viewableItems[0].index);
     setIdItem(item.viewableItems[0].index);
@@ -99,11 +128,11 @@ const Posts = () => {
     );
   };
   const handleLike = (item) => {
-    likePost(item._id);
+    likePost(item._id, item);
     setIsLoadLike(!isLoadLike);
   };
   const handleUnLike = (item) => {
-    unlikePost(item._id);
+    unlikePost(item._id, item);
     setIsLoadLike(!isLoadLike);
   };
   const renderPost = ({ item }) => {
@@ -112,7 +141,7 @@ const Posts = () => {
         <View style={styles.headerPost}>
           <Image
             source={{
-              uri: item.user.avatar
+              uri: item.user?.avatar
             }}
             style={styles.avatarPost}
             resizeMethod={'resize'}

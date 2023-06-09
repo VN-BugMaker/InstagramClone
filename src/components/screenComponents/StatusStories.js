@@ -2,8 +2,7 @@ import { View, Text, Image, StatusBar, TextInput } from 'react-native';
 import React from 'react';
 
 const Status = ({ route, navigation }) => {
-  const { name } = route.params;
-  const { image } = route.params;
+  const { name, image } = route.params;
   return (
     <View
       style={{

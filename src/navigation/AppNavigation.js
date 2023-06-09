@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppStack from './AppStack';
 import { AuthContext } from '../context/AuthContext';
 import Login from '../components/screens/Login';
+import SocketClient from '../socket/SocketClient';
 
 const AppNavigation = () => {
   const { isLoading, userToken } = useContext(AuthContext);
@@ -17,7 +18,10 @@ const AppNavigation = () => {
       ) : userToken === null ? (
         <Login />
       ) : (
-        <AppStack />
+        <View style={styles.main}>
+          <AppStack />
+          <SocketClient />
+        </View>
       )}
     </NavigationContainer>
   );
@@ -27,7 +31,8 @@ const styles = StyleSheet.create({
   loading: {
     flex: 1,
     justifyContent: 'center'
-  }
+  },
+  main: { flex: 1 }
 });
 
 export default AppNavigation;

@@ -16,6 +16,9 @@ import Comments from '../components/screenComponents/Comments';
 import Message from '../components/screens/Message';
 import MessageDetail from '../components/screenComponents/MessageDetail';
 import PostDetail from '../components/screenComponents/PostDetail';
+import CallModal from '../components/screenComponents/messages/CallModal';
+import NewStories from '../components/screenComponents/NewStories';
+import NextStories from '../components/screenComponents/NextStories';
 
 const AppStack = () => {
   const Stack = createStackNavigator();
@@ -84,6 +87,28 @@ const AppStack = () => {
         component={PostDetail}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="CallModal"
+        component={CallModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+        }}
+      />
+      <Stack.Screen
+        name="NewStories"
+        component={NewStories}
+        options={{
+          gestureDirection: 'horizontal-inverted',
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}
+      />
+      <Stack.Screen
+        name="NextStories"
+        component={NextStories}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forFadeFromCenter
         }}
       />
     </Stack.Navigator>

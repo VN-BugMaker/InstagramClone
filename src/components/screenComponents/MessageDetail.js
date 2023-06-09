@@ -15,9 +15,8 @@ import { VideoSvg } from '../../svg-view';
 import { AuthContext } from '../../context/AuthContext';
 import { URL } from './api/Url';
 import axios from 'axios';
-import { io } from 'socket.io-client';
 const MessageDetail = ({ route, navigation }) => {
-  const { userToken, idUser } = useContext(AuthContext);
+  const { userToken, idUser, socket } = useContext(AuthContext);
   const { username, avatar, _id, fullname } = route.params;
   const [reload, setReload] = useState(false);
   const [message, setMessage] = useState([]);
@@ -26,7 +25,6 @@ const MessageDetail = ({ route, navigation }) => {
   const page = useRef();
   const [textContent, setTextContent] = useState(null);
 
-  const socket = io(URL);
   useEffect(() => {
     socket.on('addMessageToClient', (msg) => {
       console.log(msg);
@@ -36,16 +34,6 @@ const MessageDetail = ({ route, navigation }) => {
   }, [socket]);
   const sendMessage = async (text, sender, recipient) => {
     setTextContent('');
-
-    // console.log(text, sender, recipient);
-    await socket.emit('addMessage', {
-      sender,
-      text,
-      recipient,
-      user: { _id, avatar, fullname, username },
-      createdAt: new Date().toISOString()
-    });
-
     await axios.post(
       `${URL}/api/message`,
       {
@@ -58,6 +46,15 @@ const MessageDetail = ({ route, navigation }) => {
         headers: { Authorization: userToken }
       }
     );
+    // console.log(text, sender, recipient);
+    await socket.emit('addMessage', {
+      sender,
+      text,
+      recipient,
+      user: { _id, avatar, fullname, username },
+      createdAt: new Date().toISOString()
+    });
+
     setReload(true);
   };
 
@@ -281,6 +278,13 @@ const MessageDetail = ({ route, navigation }) => {
               <Ionic
                 name="ios-call-outline"
                 style={{ fontSize: 24, paddingRight: 20 }}
+                onPress={() =>
+                  navigation.push('CallModal', {
+                    fullname,
+                    avatar,
+                    id: _id
+                  })
+                }
               />
               <VideoSvg />
             </View>

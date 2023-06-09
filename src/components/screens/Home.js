@@ -57,7 +57,7 @@ const Home = ({ navigation }) => {
         // }
       >
         <View style={[styles.storyWrapper, { flex: 1 }]}>
-          {/* <Stories /> */}
+          <Stories />
         </View>
         <Posts />
       </ScrollView>

@@ -54,7 +54,6 @@ const Posts = ({ id }) => {
           scrollEnabled={true}
           refreshing={refreshing}
           onRefresh={onRefresh}
-          contentContainerStyle={{ flexGrow: 1 }}
         >
           <View style={styles.viewImagePost}>
             {posts.map((item, index) => {
@@ -167,7 +166,7 @@ const styles = StyleSheet.create({
   viewImagePost: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     paddingVertical: 2,
     paddingHorizontal: 0.5
   },

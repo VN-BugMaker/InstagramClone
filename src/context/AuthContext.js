@@ -3,6 +3,8 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URL } from '../components/screenComponents/api/Url';
+import Peer from 'peerjs';
+import { io } from 'socket.io-client';
 
 export const AuthContext = createContext();
 
@@ -12,6 +14,19 @@ export const AuthProvider = ({ children }) => {
   const [avatarUser, setAvatarUser] = useState(null);
   const [username, setUsername] = useState(null);
   const [idUser, setIdUser] = useState(null);
+  const [peer, setPeer] = useState();
+  const [newData, setNewData] = useState();
+  const socket = io.connect(URL);
+
+  useEffect(() => {
+    const configuration = {
+      iceServers: [{ url: 'stun:stun.l.google.com:19302' }],
+      path: '/'
+    };
+    const newPeer = new Peer(undefined, configuration);
+    setPeer(newPeer);
+  }, []);
+
   const login = ({ email, password }) => {
     setIsLoading(true);
     axios
@@ -24,6 +39,7 @@ export const AuthProvider = ({ children }) => {
         AsyncStorage.setItem('idUser', res.data.user._id);
         AsyncStorage.setItem('avatarUser', res.data.user.avatar);
         AsyncStorage.setItem('username', res.data.user.username);
+        setNewData(res.data.user);
         setIdUser(res.data.user._id);
         setUserToken(res.data.access_token);
         setAvatarUser(res.data.user.avatar);
@@ -32,6 +48,7 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((err) => {
         alert('User or fail');
+        console.log(err);
       });
     setIsLoading(false);
   };
@@ -66,12 +83,15 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         isLoading,
+        newData,
         username,
         userToken,
         avatarUser,
         idUser,
         login,
-        logout
+        logout,
+        peer,
+        socket
       }}
     >
       {children}

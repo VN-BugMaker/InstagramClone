@@ -62,7 +62,6 @@ const Profile = () => {
           {data._id === idUser ? (
             <View>
               <ScrollView
-                style={{ backgroundColor: 'red ' }}
                 scrollEnabled={false}
                 nestedScrollEnabled={true}
                 horizontal={false}
