@@ -229,9 +229,9 @@ const MessageDetail = ({ route, navigation }) => {
               }}
             >
               {item.text ? (
-                <Text>{item.text}</Text>
+                <Text style={{ color: 'white' }}>{item.text}</Text>
               ) : item.call ? (
-                <Text>{item.call.times}</Text>
+                <Text style={{ color: 'white' }}>{item.call.times}</Text>
               ) : (
                 <Image
                   source={{ uri: item.media.map((item) => item.url) }}

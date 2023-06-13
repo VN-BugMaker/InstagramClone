@@ -25,29 +25,12 @@ const AddPost = ({ navigation }) => {
   const [base64Img, setBase64Img] = useState();
   const [loading, setLoading] = useState(false);
   const { userToken, idUser, avatarUser, username } = useContext(AuthContext);
-  // const postImageServer = async (img) => {
-  //   const formData = new FormData();
-  //   formData.append('file', base64Img);
-  //   formData.append('upload_preset', 'x4dvib4l');
-  //   formData.append('cloud_name', 'dw1sniewf');
-  //   // console.log(img);
-  //   const res = await fetch(
-  //     'https://api.cloudinary.com/v1_1/dw1sniewf/image/upload',
-  //     {
-  //       method: 'POST',
-  //       body: formData
-  //     }
-  //   );
-  //   const image = await res.json();
-  //   setImages(image);
-  // };
   const postImage = async () => {
     setLoading(true);
     const formData = new FormData();
     formData.append('file', base64Img);
     formData.append('upload_preset', 'x4dvib4l');
     formData.append('cloud_name', 'dw1sniewf');
-    // console.log(img);
     const res = await fetch(
       'https://api.cloudinary.com/v1_1/dw1sniewf/image/upload',
       {
@@ -82,30 +65,15 @@ const AddPost = ({ navigation }) => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        // allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
         allowsMultipleSelection: true,
         base64: true
       });
-      // console.log(
-      //   result.selected.map((item) => {
-      //     return `data:image/jpg;base64,${item.base64}`;
-      //   })
-      // );
       if (!result.cancelled) {
         setImages(result.uri ? [result.uri] : result.selected);
-        // result.selected
-        //   ? postImageServer(
-        //       result.selected.map((item) => {
-        //         let base64Img = `data:image/jpg;base64,${item.base64}`;
-        //         return base64Img;
-        //       })
-        //     )
-        //   : null;
         let base64Img = `data:image/jpg;base64,${result.base64}`;
         setBase64Img(base64Img);
-        // console.log(base64Img);
       }
     } catch (error) {
       console.log(error);

@@ -14,6 +14,7 @@ import { ScrollView } from 'react-native-virtualized-view';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { URL } from './api/Url';
+import { badWords, blackList } from 'vn-badwords';
 
 const Comments = ({ route, navigation }) => {
   const [like, setLike] = useState(like);
@@ -61,7 +62,6 @@ const Comments = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    console.log('hello');
     const loadComment = async () => {
       await fetch(`${URL}/api/post/${id}`, {
         method: 'GET',
@@ -98,7 +98,9 @@ const Comments = ({ route, navigation }) => {
                 <Text style={styles.textTime}>12 giờ</Text>
               </View>
               <View style={styles.content}>
-                <Text style={styles.textContent}>{item.content}</Text>
+                <Text style={styles.textContent}>
+                  {badWords(item.content, { replacement: '*' })}
+                </Text>
               </View>
               <View style={styles.reply}>
                 <TouchableOpacity
@@ -156,7 +158,9 @@ const Comments = ({ route, navigation }) => {
                     <Text style={styles.textTime}>12 giờ</Text>
                   </View>
                   <View style={{ width: 256 }}>
-                    <Text style={styles.textContent}>{reply.content}</Text>
+                    <Text style={styles.textContent}>
+                      {badWords(reply.content, { replacement: '*' })}
+                    </Text>
                   </View>
                   <View style={styles.reply}>
                     <TouchableOpacity

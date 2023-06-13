@@ -6,10 +6,11 @@ const LoadPost = () => {
   return (
     <View style={[StyleSheet.absoluteFillObject, styles.container]}>
       <Lottie
-        source={require('../../../storage/images/animated/961-checked-loading.json')}
+        source={require('../../../storage/images/animated/97194-loading.json')}
         style={{ height: 120, width: 120 }}
         autoPlay
         loop
+        speed={2}
       />
     </View>
   );
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    zIndex: 1
+    zIndex: 1,
+    flex: 1
   }
 });
