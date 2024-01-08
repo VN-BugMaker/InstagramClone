@@ -1202,27 +1202,6 @@
     node-forge "^1.2.1"
     nullthrows "^1.1.1"
 
-"@expo/config-plugins@46.0.21":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-6.0.0.tgz#b17d633b708a547e229c981b95e23773fec7fa47"
-  integrity sha512-Hp9ZbAvonzPTJFcoBBfmxwLwxHFOQuj8YcbYzSW2UiXeco79Q0itsCEKenvfc16V+ZwMkcjpbahy5/8uVn6aiA==
-  dependencies:
-    "@expo/config-types" "^48.0.0"
-    "@expo/json-file" "~8.2.37"
-    "@expo/plist" "^0.0.20"
-    "@expo/sdk-runtime-versions" "^1.0.0"
-    "@react-native/normalize-color" "^2.0.0"
-    chalk "^4.1.2"
-    debug "^4.3.1"
-    find-up "~5.0.0"
-    getenv "^1.0.0"
-    glob "7.1.6"
-    resolve-from "^5.0.0"
-    semver "^7.3.5"
-    slash "^3.0.0"
-    xcode "^3.0.1"
-    xml2js "0.4.23"
-
 "@expo/config-plugins@^4.1.5":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-4.1.5.tgz#9d357d2cda9c095e511b51583ede8a3b76174068"
@@ -1243,6 +1222,27 @@
     slash "^3.0.0"
     xcode "^3.0.1"
     xml2js "0.4.23"
+
+"@expo/config-plugins@^7.2.5":
+  version "7.2.5"
+  resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-7.2.5.tgz#b15f22878975fdc4ddcfa8cdc971937ddc4c0249"
+  integrity sha512-w+5ccu1IxBHgyQk9CPFKLZOk8yZQEyTjbJwOzESK1eR7QwosbcsLkN1c1WWUZYiCXwORu3UTwJYll4+X2xxJhQ==
+  dependencies:
+    "@expo/config-types" "^49.0.0-alpha.1"
+    "@expo/json-file" "~8.2.37"
+    "@expo/plist" "^0.0.20"
+    "@expo/sdk-runtime-versions" "^1.0.0"
+    "@react-native/normalize-color" "^2.0.0"
+    chalk "^4.1.2"
+    debug "^4.3.1"
+    find-up "~5.0.0"
+    getenv "^1.0.0"
+    glob "7.1.6"
+    resolve-from "^5.0.0"
+    semver "^7.5.3"
+    slash "^3.0.0"
+    xcode "^3.0.1"
+    xml2js "0.6.0"
 
 "@expo/config-plugins@~5.0.0", "@expo/config-plugins@~5.0.1", "@expo/config-plugins@~5.0.3":
   version "5.0.4"
@@ -1280,10 +1280,10 @@
   resolved "https://registry.npmjs.org/@expo/config-types/-/config-types-47.0.0.tgz"
   integrity sha512-r0pWfuhkv7KIcXMUiNACJmJKKwlTBGMw9VZHNdppS8/0Nve8HZMTkNRFQzTHW1uH3pBj8jEXpyw/2vSWDHex9g==
 
-"@expo/config-types@^48.0.0":
-  version "48.0.0"
-  resolved "https://registry.yarnpkg.com/@expo/config-types/-/config-types-48.0.0.tgz#15a46921565ffeda3c3ba010701398f05193d5b3"
-  integrity sha512-DwyV4jTy/+cLzXGAo1xftS6mVlSiLIWZjl9DjTCLPFVgNYQxnh7htPilRv4rBhiNs7KaznWqKU70+4zQoKVT9A==
+"@expo/config-types@^49.0.0-alpha.1":
+  version "49.0.0"
+  resolved "https://registry.yarnpkg.com/@expo/config-types/-/config-types-49.0.0.tgz#15ffef715285c06703f6fb7ec0cda853f645cc09"
+  integrity sha512-8eyREVi+K2acnMBe/rTIu1dOfyR2+AMnTLHlut+YpMV9OZPdeKV0Bs9BxAewGqBA2slslbQ9N39IS2CuTKpXkA==
 
 "@expo/config@7.0.1":
   version "7.0.1"
@@ -2637,11 +2637,6 @@
     prompts "^2.4.0"
     semver "^6.3.0"
 
-"@react-native-community/masked-view@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.11.tgz"
-  integrity sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw==
-
 "@react-native-masked-view/masked-view@0.2.7":
   version "0.2.7"
   resolved "https://registry.npmjs.org/@react-native-masked-view/masked-view/-/masked-view-0.2.7.tgz"
@@ -3578,10 +3573,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-axios@^1.1.3:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/axios/-/axios-1.2.0.tgz"
-  integrity sha512-zT7wZyNYu3N5Bu0wuZ6QccIf93Qk1eV8LOewxgjOZFd2DenOs98cJ7+Y6703d0wkaXGY6/nZd4EweJaHz9uzQw==
+axios@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
+  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"
@@ -10494,27 +10489,10 @@ react-native-health@^1.14.0:
   dependencies:
     "@expo/config-plugins" "^4.1.5"
 
-react-native-image-pan-zoom@^2.1.12:
-  version "2.1.12"
-  resolved "https://registry.yarnpkg.com/react-native-image-pan-zoom/-/react-native-image-pan-zoom-2.1.12.tgz#eb98bf56fb5610379bdbfdb63219cc1baca98fd2"
-  integrity sha512-BF66XeP6dzuANsPmmFsJshM2Jyh/Mo1t8FsGc1L9Q9/sVP8MJULDabB1hms+eAoqgtyhMr5BuXV3E1hJ5U5H6Q==
-
 react-native-image-picker@^4.10.1:
   version "4.10.1"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-4.10.1.tgz"
   integrity sha512-tPA9UtboEsZ8qtm7pX9WInlo9sf0J2ArJgP4uVgKw1QNrwkRX/kZQ6uzOSN747Dhj9WS42ce4RN+rFK86J13DQ==
-
-react-native-image-zoom-viewer@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-image-zoom-viewer/-/react-native-image-zoom-viewer-3.0.1.tgz#a2bd5fb3bda15e0686ce88fcde8576726495d7fb"
-  integrity sha512-la6s5DNSuq4GCRLsi5CZ29FPjgTpdCuGIRdO5T9rUrAtxrlpBPhhSnHrbmPVxsdtOUvxHacTh2Gfa9+RraMZQA==
-  dependencies:
-    react-native-image-pan-zoom "^2.1.12"
-
-react-native-image-zoom@^0.32.0:
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/react-native-image-zoom/-/react-native-image-zoom-0.32.0.tgz#633f0b796d6303e8a7ef99133733c53dd5a7a81c"
-  integrity sha512-hiMwWoF8uqT6VVo1psNMnrUH5GQfDZBFzNpHlXOUYt7+0R952rENY8OMNkZwAjUqsfE74J99KV5ywmCeuZZ9WA==
 
 react-native-insta-story@^1.1.9:
   version "1.1.9"
@@ -11198,6 +11176,13 @@ semver@^7.3.5, semver@^7.3.8:
   dependencies:
     lru-cache "^6.0.0"
 
+semver@^7.5.3:
+  version "7.5.4"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
+  integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==
+  dependencies:
+    lru-cache "^6.0.0"
+
 semver@~7.3.2:
   version "7.3.8"
   resolved "https://registry.npmjs.org/semver/-/semver-7.3.8.tgz"
@@ -11446,7 +11431,7 @@ sliced@^1.0.1:
 
 slugify@^1.3.4:
   version "1.6.6"
-  resolved "https://registry.npmjs.org/slugify/-/slugify-1.6.6.tgz"
+  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.6.6.tgz#2d4ac0eacb47add6af9e04d3be79319cbcc7924b"
   integrity sha512-h+z7HKHYXj6wJU+AnS/+IH8Uh9fdcX1Lrhg1/VMdf9PwoBQXFcXiAdsy2tSK0P6gKwJLXp02r90ahUCqHk9rrw==
 
 snapdragon-node@^2.0.1:
@@ -12953,6 +12938,14 @@ xml2js@0.4.23:
   version "0.4.23"
   resolved "https://registry.npmjs.org/xml2js/-/xml2js-0.4.23.tgz"
   integrity sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==
+  dependencies:
+    sax ">=0.6.0"
+    xmlbuilder "~11.0.0"
+
+xml2js@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.6.0.tgz#07afc447a97d2bd6507a1f76eeadddb09f7a8282"
+  integrity sha512-eLTh0kA8uHceqesPqSE+VvO1CDDJWMwlQfB6LuN6T8w6MaDJ8Txm8P7s5cHD0miF0V+GGTZrDQfxPZQVsur33w==
   dependencies:
     sax ">=0.6.0"
     xmlbuilder "~11.0.0"
